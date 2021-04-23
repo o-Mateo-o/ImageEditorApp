@@ -1,17 +1,16 @@
-
+#ManagePic.jl
 module ManagePic
 
 using Images, ImageShow, FileIO 
 
-export RGB
+export RGB, save
 
 function RGB(filename)
-    img = FileIO.load(filename)
-    r = (Float64.(red.(img)))
-    g = (Float64.(green.(img)))
-    b = (Float64.(blue.(img)))
+    img = load("Meg.jpg")
+    global r = (Float64.(red.(img)))
+    global g = (Float64.(green.(img)))
+    global b = (Float64.(blue.(img)))
     
-    return [r, g, b]
 end #RGB
 
 function save(filename, r, g, b)
@@ -21,4 +20,6 @@ end
 
 function HSL()
 end
+
+
 end #ManagePic
