@@ -1,7 +1,7 @@
 
 module ManagePic
 
-using FileIO, Images
+using Images, ImageShow, FileIO 
 
 export RGB
 
