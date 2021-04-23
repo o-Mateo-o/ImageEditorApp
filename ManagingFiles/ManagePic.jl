@@ -3,7 +3,7 @@ module ManagePic
 
 using FileIO, Images, ImageShow
 
-export RGB, save
+export generate_matrices_RGB, save_pictures
 
 function generate_matrices_RGB(filename)
     img = load(filename)
