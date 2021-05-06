@@ -1,8 +1,6 @@
 #ManagePic.jl
 module ManagePic
-"""
-moduł do obsługi plików. użyjcie include() i using .ManagePic !!
-"""
+
 using FileIO, Images, ImageShow
 
 export generate_matrices_RGB, save_pictures
