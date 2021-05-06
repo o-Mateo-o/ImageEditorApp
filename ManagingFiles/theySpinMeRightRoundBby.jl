@@ -7,7 +7,10 @@ function mirror(RGB, ax)
         dim = 1 
     elseif ax == :y 
         dim = 2 
+    else
+        return
+    end
     newRGB = reverse.(RGB, dims=dim)
     return newRGB 
-
+end
     
