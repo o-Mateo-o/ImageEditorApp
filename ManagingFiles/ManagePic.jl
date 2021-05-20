@@ -116,5 +116,14 @@ function hsl2rgb(hsl)
     return [r,g,b]
 end 
 
+"""
+Count lightness.
+:param rgb::Array{Array{Float64,2},1}; RGB matrices tuple
+"""
+function lightness(rgb)
+    r, g, b = rgb
+    l = (max.(r,g,b) .+ min.(r,g,b))./2
+   return l
+end
 
 end #ManagePic
