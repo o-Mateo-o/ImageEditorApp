@@ -4,7 +4,10 @@
 
 """
 Get maximum, middle and minimum values of each color.
-:param rgb::Array{Array{Float64,2},1}; RGB matrices tuple
+
+# Arguments
+
+- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
 """
 function getValues(rgb)
 
