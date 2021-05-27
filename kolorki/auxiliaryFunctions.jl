@@ -1,6 +1,6 @@
-#TO DO: DOCSTRINGS? @Kinga
+# TO DO: DOCSTRINGS? @Kinga
 
-#auxiliary functions
+# auxiliary functions
 
 """
 Get maximum, middle and minimum values of each color.
@@ -11,25 +11,25 @@ Get maximum, middle and minimum values of each color.
 """
 function getValues(rgb)
 
-    r,g,b = rgb
-    Cmax = max.(r,g,b)
-    Cmin = min.(r,g,b)
+    r, g, b = rgb
+    Cmax = max.(r, g, b)
+    Cmin = min.(r, g, b)
     sum = r .+ g .+ b
     middleValue = sum .- Cmax .- Cmin
     return [Cmax, middleValue, Cmin]
 end
 
-#doc?
-function setValuesLighten(rgb, newHighValue, newMiddleValue, newLowValue) #wersja do rozjaśniania
-    r,g,b = rgb
+# doc?
+function setValuesLighten(rgb, newHighValue, newMiddleValue, newLowValue) # wersja do rozjaśniania
+    r, g, b = rgb
     arraySize = size(r)
     
-    newRed = zeros(Float64,arraySize[1],arraySize[2])
-    newGreen = zeros(Float64,arraySize[1],arraySize[2])
-    newBlue = zeros(Float64,arraySize[1],arraySize[2])
+    newRed = zeros(Float64, arraySize[1], arraySize[2])
+    newGreen = zeros(Float64, arraySize[1], arraySize[2])
+    newBlue = zeros(Float64, arraySize[1], arraySize[2])
     
-    Cmax = max.(r,g,b)
-    Cmin = min.(r,g,b)
+    Cmax = max.(r, g, b)
+    Cmin = min.(r, g, b)
     
     for i in 1:arraySize[1], j in 1:arraySize[2]
         
@@ -73,17 +73,17 @@ function setValuesLighten(rgb, newHighValue, newMiddleValue, newLowValue) #wersj
     return [newRed, newGreen, newBlue]
 end
 
-#doc?
+# doc?
 function setValuesSaturation(rgb, newHighValue, newMiddleValue, newLowValue)
-    r,g,b = rgb
+    r, g, b = rgb
     arraySize = size(r)
     
-    newRed = zeros(Float64,arraySize[1],arraySize[2])
-    newGreen = zeros(Float64,arraySize[1],arraySize[2])
-    newBlue = zeros(Float64,arraySize[1],arraySize[2])
+    newRed = zeros(Float64, arraySize[1], arraySize[2])
+    newGreen = zeros(Float64, arraySize[1], arraySize[2])
+    newBlue = zeros(Float64, arraySize[1], arraySize[2])
     
-    Cmax = max.(r,g,b)
-    Cmin = min.(r,g,b)
+    Cmax = max.(r, g, b)
+    Cmin = min.(r, g, b)
     
     for i in 1:arraySize[1], j in 1:arraySize[2]
         
