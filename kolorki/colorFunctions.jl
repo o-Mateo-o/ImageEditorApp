@@ -161,6 +161,18 @@ end
 
 # OTHER
 
+"""
+Create a negative of a image.
+- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+"""
+function negative(rgb)
+    r, g, b = rgb
+    newRed = 1 .- r
+    newGreen = 1 .- g
+    newBlue = 1 .- b
+    return [newRed, newGreen, newBlue]
+end
+
 # Only
 function onlyRed(rgb)
     r, g, b = rgb
