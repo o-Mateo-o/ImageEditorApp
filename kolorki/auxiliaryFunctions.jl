@@ -19,7 +19,9 @@ function getValues(rgb)
     return [Cmax, middleValue, Cmin]
 end
 
-# doc?
+"""
+Set the values depending on value of each color; used to increase lightness.
+"""
 function setValuesLighten(rgb, newHighValue, newMiddleValue, newLowValue) # wersja do rozjaśniania
     r, g, b = rgb
     arraySize = size(r)
@@ -73,7 +75,9 @@ function setValuesLighten(rgb, newHighValue, newMiddleValue, newLowValue) # wers
     return [newRed, newGreen, newBlue]
 end
 
-
+"""
+Set the values depending on value of each color; used to reduce lightness.
+"""
 function setValuesDarken(rgb, newHighValue, newMiddleValue, newLowValue) #wersja do przyciemniania
     r,g,b = rgb
     arraySize = size(r)
@@ -128,7 +132,9 @@ function setValuesDarken(rgb, newHighValue, newMiddleValue, newLowValue) #wersja
 end
 
 
-# doc?
+"""
+Set the values depending on value of each color; used to change saturation.
+"""
 function setValuesSaturation(rgb, newHighValue, newMiddleValue, newLowValue)
     r, g, b = rgb
     arraySize = size(r)
