@@ -5,7 +5,12 @@ using FileIO, Images, ImageShow
 
 export generateMatricesRGB, matriceRGB, savePicture, savePictureRGB, rgb2hsl, hsl2rgb
 
+"""
+Convert a file to color matrices.
 
+# Arguments
+- `filename`::String`: name of file to load
+"""
 function generateMatricesRGB(filename)
     img = load(filename)
     r = (Float64.(red.(img)))
@@ -14,15 +19,40 @@ function generateMatricesRGB(filename)
     return(r,g,b)
 end #RGB
 
+"""
+Convert color matrices o RGB matrice.
+
+# Arguments
+- `r`::Array{Float, 2}` full-size matrix of red color.
+- `g`::Array{Float, 2}` full-size matrix of green color.
+- `b`::Array{Float, 2}` full-size matrix of blue color.
+"""
 function matriceRGB(r,g,b)
     return ([RGB(r[i,j],g[i, j],b[i,j]) for i in 1:size(r)[1], j in 1:size(r)[2] ])
 end #matriceRGB
 
+
+"""
+Save a r g b matrices as a picture.
+
+# Arguments
+- `newFilename`::String`: name of file.
+- `r`::Array{Float, 2}` full-size matrix of red color.
+- `g`::Array{Float, 2}` full-size matrix of green color.
+- `b`::Array{Float, 2}` full-size matrix of blue color.
+"""
 function savePicture(newFilename, r, g, b)
     aa = matriceRGB(r,g,b) #z powrotem do RGB
     save(newFilename, aa)
 end #save
 
+"""
+Save RGB matrice as a picture.
+
+# Arguments
+- `newFilename`::String`: name of file.
+- `RGB`::Array{Array{Float64,2},1}`: RGB matrices tuple
+"""
 function savePictureRGB(newFilename, RGB)
     savePicture(newFilename, RGB[1], RGB[2], RGB[3])
 end #save2
@@ -31,7 +61,9 @@ end #save2
 """
 Convert RGB to HSL.
 Return image as HSL matrices tuple.
-:param rgb::Array{Array{Float64,2},1}; RGB matrices tuple
+
+# Arguments
+- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
 """
 function rgb2hsl(rgb)
     r, g, b = rgb
@@ -75,7 +107,9 @@ end
 """
 Convert HSL to RGB.
 Return image as RGB matrices tuple.
-:param hsl::Array{Array{Float64,2},1}; HSL matrices tuple
+
+#Arguments
+- `hsl`::Array{Array{Float64,2},1}`: HSL matrices tuple
 """
 function hsl2rgb(hsl)
     h, s, l = hsl
@@ -121,7 +155,9 @@ end
 
 """
 Count lightness.
-:param rgb::Array{Array{Float64,2},1}; RGB matrices tuple
+
+Arduments:
+- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
 """
 function lightness(rgb)
     r, g, b = rgb
