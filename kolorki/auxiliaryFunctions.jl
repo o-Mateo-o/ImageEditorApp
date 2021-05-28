@@ -6,7 +6,6 @@
 Get maximum, middle and minimum values of each color.
 
 # Arguments
-
 - `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
 """
 function getValues(rgb)
@@ -78,16 +77,16 @@ end
 """
 Set the values depending on value of each color; used to reduce lightness.
 """
-function setValuesDarken(rgb, newHighValue, newMiddleValue, newLowValue) #wersja do przyciemniania
-    r,g,b = rgb
+function setValuesDarken(rgb, newHighValue, newMiddleValue, newLowValue) # wersja do przyciemniania
+    r, g, b = rgb
     arraySize = size(r)
     
-    newRed = zeros(Float64,arraySize[1],arraySize[2])
-    newGreen = zeros(Float64,arraySize[1],arraySize[2])
-    newBlue = zeros(Float64,arraySize[1],arraySize[2])
+    newRed = zeros(Float64, arraySize[1], arraySize[2])
+    newGreen = zeros(Float64, arraySize[1], arraySize[2])
+    newBlue = zeros(Float64, arraySize[1], arraySize[2])
     
-    Cmax = max.(r,g,b)
-    Cmin = min.(r,g,b)
+    Cmax = max.(r, g, b)
+    Cmin = min.(r, g, b)
     
     for i in 1:arraySize[1], j in 1:arraySize[2]
 

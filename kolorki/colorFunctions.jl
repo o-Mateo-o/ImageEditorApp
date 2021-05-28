@@ -28,6 +28,7 @@ end
 
 """
 Change lightness.
+
 # Arguments
 - `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
 - `parameter`::Float64`: in range [-100, 100]; negative value create image with lower lightness
