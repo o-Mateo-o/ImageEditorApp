@@ -262,9 +262,7 @@ end
 
 function changeColors(rgb, point) # point is in range [0,360]
     if point <= 360 && point >= 0
-        r, g, b = rgb
         h, s, l = rgb2hsl(rgb)
-        # newH = h
         Hue = h .+ point
         trypletHSL = Hue, s, l
         newRGB = hsl2rgb(trypletHSL)
