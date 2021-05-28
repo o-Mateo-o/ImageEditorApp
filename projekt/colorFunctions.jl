@@ -5,8 +5,8 @@ include("auxiliaryFunctions.jl")
 Change contrast.
 
 # Arguments
-- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
-- `parameter`::Float64`: in range [-100, 100], negative values create image with lower contrast
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+- `parameter::Float64`: in range [-100, 100], negative values create image with lower contrast
 """
 function changeContrast(rgb, parameter::Float64)
     if parameter >= -100 && parameter <= 100
@@ -30,8 +30,8 @@ end
 Change lightness.
 
 # Arguments
-- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
-- `parameter`::Float64`: in range [-100, 100]; negative value create image with lower lightness
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+- `parameter::Float64`: in range [-100, 100]; negative value create image with lower lightness
 """
 function changeLightness(rgb, parameter) # watrość parametru jest w zakresie [-100, 100], gdy wartość jest > 0 wtedy jest rozjaśnianie, a gdy < 0 przyciemnianie
 
@@ -72,8 +72,8 @@ end
 Change saturation.
 
 #Arguments
-- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
-- `parameter`::Float64`: in range [-100, 100], negative value create image with lower saturation
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+- `parameter::Float64`: in range [-100, 100], negative value create image with lower saturation
 """
 function changeSaturation(rgb, parameter)
 
@@ -126,7 +126,7 @@ end
 Count average value of each pixel.
 
 # Arguments
-- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
 """
 function average(rgb) # as a average value of pixel
 
@@ -139,7 +139,7 @@ end
 Get Lightness from HSL and set as a grayscale.
 
 # Arguments
-- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
 """
 function grayscaleLightness(rgb) # as HSL lightness
 
@@ -151,7 +151,7 @@ end
 Gets grayscale by using some ratio.
 
 # Arguments
-- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
 """
 function grayscaleLuminosity(rgb) # calculated by ratio
 
@@ -164,7 +164,7 @@ end
 
 """
 Create a negative of a image.
-- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
 """
 function negative(rgb)
     r, g, b = rgb

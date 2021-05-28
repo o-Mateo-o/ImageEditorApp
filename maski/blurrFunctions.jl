@@ -2,17 +2,18 @@
 # auxiliary functions
 #####################
 
+"""
+Function which calculate value of new pixel.
 
+# Arguments
+- `copied`::Array{Float, 2}` full-size matrix of one color.
+- `mask`: mask used in transition
+*param x: first coordinate of left-upper corner of copied
+*param y: second coordinate of left-upper corner of copied
+
+*Return new value of a pixel.
+"""
 function layingMask(copied, mask, x,y)
-    """
-    Function which calculate value of new pixel.
-    *Return new value of a pixel.
-    *param copied: copy of an R or G or B 
-    *param mask: mask used in transition
-    *param x: first coordinate of left-upper corner of copied
-    *param y: second coordinate of left-upper corner of copied
-    
-    """
     dimM = size(mask)
     return sum(copied[x:x+dimM[2]-1, y:y+dimM[1]-1].*mask)/sum(mask)
 end
