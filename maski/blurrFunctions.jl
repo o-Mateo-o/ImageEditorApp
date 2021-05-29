@@ -2,63 +2,59 @@
 # auxiliary functions
 #####################
 
+"""
+Calculate value of new pixel using mask.
 
+#Arguments
+- `copied::Array{Float64,2}`: copy of an R or G or B .
+- `mask::Array{Float64,2}`: mask used in transition.
+- `x::Int64`: first coordinate of left-upper corner of copied.
+- `y::Int64`: second coordinate of left-upper corner of copied.
+"""
 function layingMask(copied, mask, x,y)
-    """
-    Function which calculate value of new pixel.
-    *Return new value of a pixel.
-    *param copied: copy of an R or G or B 
-    *param mask: mask used in transition
-    *param x: first coordinate of left-upper corner of copied
-    *param y: second coordinate of left-upper corner of copied
-    
-    """
     dimM = size(mask)
     return sum(copied[x:x+dimM[2]-1, y:y+dimM[1]-1].*mask)/sum(mask)
 end
 
+"""
+Assign to pixel minimum value from the surrounding determined by mask.
 
+#Arguments
+- `copied::Array{Float64,2}`: copy of an R or G or B .
+- `mask::Array{Float64,2}`: mask used in transition.
+- `x::Int64`: first coordinate of left-upper corner of copied.
+- `y::Int64`: second coordinate of left-upper corner of copied.  
+"""
 function minimumValue(copied, mask, x,y)
-    """
-    Function which calculate value of new pixel.
-    *Return new value of a pixel.
-    *param copied: copy of an R or G or B 
-    *param mask: mask used in transition
-    *param x: first coordinate of left-upper corner of copied
-    *param y: second coordinate of left-upper corner of copied
-    
-    """
     dimM = size(mask)
     return minimum(copied[x:x+dimM[2]-1, y:y+dimM[1]-1])
 end
 
+"""
+Assign to pixel maximum value from the surrounding determined by mask.
 
+#Arguments
+- `copied::Array{Float64,2}`: copy of an R or G or B .
+- `mask::Array{Float64,2}`: mask used in transition.
+- `x::Int64`: first coordinate of left-upper corner of copied.
+- `y::Int64`: second coordinate of left-upper corner of copied.  
+"""
 function maximumValue(copied, mask, x,y)
-    """
-    Function which calculate value of new pixel.
-    *Return new value of a pixel.
-    *param copied: copy of an R or G or B 
-    *param mask: mask used in transition
-    *param x: first coordinate of left-upper corner of copied
-    *param y: second coordinate of left-upper corner of copied
-    
-    """
     dimM = size(mask)
     return maximum(copied[x:x+dimM[2]-1, y:y+dimM[1]-1])
 end
 
+"""
+Convert a given picture with mask. At first copy every RGB matrix and reproduce extreme pixels.
+Then create new matrix filled with values calculated in layingMask function 
+and return list consisted of of new R G and B values.
 
+#Arguments
+- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: tuple of R G and B matrices of a picture
+   which is supposed to be converted.
+- `typeofmask::Array{Float64,2}`: mask which is a result of typeofmask function.
+"""
 function converting(picture, typeofmask)
-    """
-    Function which convert a given picture with mask. At first it copies every RGB matrix and reproduces extreme pixels.
-    Then it creates new matrix filled with values calculated in layingMask function.
-    
-    *Return list consisted of of new R G and B values.
-    
-    *param picture: tuple of R G and B matrices of a picture which is supposed to be converted
-    *param typeofmask: mask which is a result of typeofmask function
-    
-    """
     mask = typeofmask
     
     dimR = size(picture[1])
@@ -75,71 +71,86 @@ function converting(picture, typeofmask)
         copied = matrix
         
         
-        helpHorizontal = copy(copied[1,:])    #kolumna o długości równej liczbie kolumn(długości wiersza) macierzy koloru
+        helpHorizontalTop = copied[1,:]    #first row of matrix
 
         for n in 1:((dimM[1]-1)/2)
-            copied = [helpHorizontal';copied;helpHorizontal']    #dodaję wiersze z zerami na górze i na dole ((i-1)/2) razy
-        end #dodawanie wierszy                                   #transpozycja zamienia mi kolumnę na wiersz
+            copied = [helpHorizontalTop';copied] #adding at the begining of matrix first row of matrix ((dimM[1]-1)/2) times
+        end #adding rows                                   #transposition transforms column into row
 
+        
+        
+        helpHorizontalBottom = copied[end,:]    #last row of matrix
 
-        helpVertical = copy(copied[:,1])  #kolumna długości równej liczbie wierszy (długości kolumny) macierzy
-                                                                 #sopiowanej po przejściu przez pierwszą pętlę
+        for n in 1:((dimM[1]-1)/2)
+            copied = [copied;helpHorizontalBottom'] #adding at the end of matrix last row of matrix ((dimM[1]-1)/2) times
+        end #adding rows                            
 
+        
+        
+        helpVerticalLeft = copied[:,1]  #first column of matrix transformed by for loops above
         for i in 1:((dimM[2]-1)/2)
-            copied = [helpVertical  copied  helpVertical]  #dodaję kolumny z zerami z lewej i prawej ((j-1)/2) razy
-        end #dodawanie kolumn
+            copied = [helpVerticalLeft  copied]  #adding at the left side of matrix first column of matrix ((dimM[1]-1)/2) times
+        end #adding columns
+  
+        
+        
+        helpVerticalRight = copied[:,end]  #last column of matrix transformed by for loops above
+                                                                 
+        for i in 1:((dimM[2]-1)/2)
+            copied = [copied  helpVerticalRight]  #adding at the right side of matrix last column of matrix ((dimM[2]-1)/2) times
+        end #adding columns
+        
         
         dimC = size(copied)
 
-        newPixelValues = Array{Float64}(undef, dimR[1], dimR[2])  #rezerwuję miejsce w pamięci
+        newPixelValues = Array{Float64}(undef, dimR[1], dimR[2])  #reserving memory
         
         
         matrix = collect(layingMask(copied, mask, x,y) for x in 1:Int64(dimC[1] - dimM[1] + 1 ), y in 1:Int64(dimC[2] - dimM[2] + 1))
         
         push!(newColorList,matrix)
         
-    end #przejście w pętli po skokpiowanych macierzach kolorów 
-        #mam już 3 zmienione macierze
-    
+    end #loop for R G B matrices 
+
     
     return newColorList
-end #fucntion
+end #function
 
 
 ######################
 #Filtry dolnoprzepustowe
 ######################
+"""
+Generate mask to blur the picture.
 
+#Arguments
+- `dim::Int64`: length of side of a mask.
+"""
 function average(dim)
-    """
-    Function which generate mask to blur the picture.
-    *Return mask filled with 1.
-    *param dim: Int64 length of side of a mask 
-    """
     mask = ones(Float64,dim, dim)
     return mask
 end
 
+"""
+Generate mask to blur the picture.
 
+#Arguments
+- `dim::Int64`: length of side of a mask.
+"""
 function circle(dim)
-    """
-    Function which generate mask to blur the picture.
-    *Return mask filled with 1 and zero in the centre.
-    *param dim: Int64 length of side of a mask 
-    """
     mask = ones(Float64,dim, dim)
     mask[1,1] = mask[1,dim] = mask[dim,1] = mask[dim,dim] = 0
     return mask
 end
 
+"""
+Generate mask to blur the picture.
 
+#Arguments
+- `dim::Int64`: length of side of a mask.
+- `param k::Float64`: value of central pixel.
+"""
 function LP3(dim, k)
-    """
-    Function which generate mask to blur the picture.
-    *Return mask filled with 1 and one other value in the middle.
-    *param dim: Int64 length of side of a mask 
-    *param k: Int64 value of central pixel
-    """
     mask = ones(Float64,dim, dim)
     mask[Int64((dim-1)/2 +1),Int64((dim-1)/2 +1)] = k
     return mask
@@ -149,41 +160,42 @@ end
 #Filtry górnoprzepustowe
 ######################
 
+"""
+Generate mask to sharpen a picture.
 
+#Arguments
+- `dim::Int64`: length of side of a mask. 
+- `param k:Float64`: value of central pixel.
+"""
 function meanRemoval(dim,k)
-    """
-    Function which generate mask to sharpen a picture.
-    *Return mask filled with -1 and one other value in the middle.
-    *param dim: Int64 length of side of a mask 
-    *param k: Int64 value of central pixel
-    """
     mask = -1(ones(Float64,dim, dim))
     mask[Int64((dim-1)/2 +1),Int64((dim-1)/2 +1)] = k
     return mask
 end
 
+"""
+Generate mask to sharpen a picture.
 
+#Arguments
+- `dim::Int64`: length of side of a mask. 
+- `param k:Float64`: value of central pixel.
+"""
 function HP1(dim,k)
-    """
-    Function which generate mask to sharpen a picture.
-    *Return mask filled with -1, 0 in corners and one other value in the middle.
-    *param dim: Int64 length of side of a mask 
-    *param k: Int64 value of central pixel
-    """
     mask = -1(ones(Float64,dim, dim))
     mask[1,1] = mask[1,dim] = mask[dim,1] = mask[dim,dim] = 0
     mask[Int64((dim-1)/2 +1),Int64((dim-1)/2 +1)] = k
     return mask
 end
 
+"""
+Generate mask to sharpen a picture.
+
+#Arguments
+- `dim::Int64`: length of side of a mask. 
+- `param k:Float64`: value of central pixel.
+"""
 #HP2?
 function HP2(dim,k)
-    """
-   Function which generate mask to sharpen a picture.
-   *Return mask filled with -2, 1 in corners and one other value in the middle.
-   *param dim: Int64 length of side of a mask 
-   *param k: Int64 value of central pixel
-   """
    mask = -2(ones(Float64,dim, dim))
    mask[1,1] = mask[1,dim] = mask[dim,1] = mask[dim,dim] = 1
    mask[Int64((dim-1)/2 +1),Int64((dim-1)/2 +1)] = k
@@ -194,17 +206,17 @@ end
 #####
 # WYKRYWANIE KRAWĘDZI
 #####
+"""
+Generate mask to detect edges on the picture in a given direction.
 
+#Arguments
+- `dim::Int64`: length of side of a mask.
+- `direction::String`: abbreviation of the name of direction:
+                     "h" horizontal edges,
+                     "v" vertical edges,
+                     "d" diagonal edges.
+"""
 function detectingEdges(dim,direction)
-    """
-   Function which generate mask to detect edges on the picture.
-   *Return mask depending on the value of parameter direction.
-   *param dim: Int64 length of side of a mask 
-   *param direction: abbreviation of the name of direction.
-                     "h" horizontal edges
-                     "v" vertical edges
-                     "d" diagonal edges
-   """
    mask = (zeros(Float64,dim, dim))
    mask[Int64((dim-1)/2 +1),Int64((dim-1)/2 +1)] = 1
    
@@ -220,20 +232,16 @@ function detectingEdges(dim,direction)
    
 end
 
+"""
+Convert a given picture with mask. At first it copy every RGB matrix and reproduce extreme pixels.
+Then create new matrix filled with values calculated in minimumValue function
+and return list consisted of of new R G and B values. 
 
+#Arguments
+- `picture::`: tuple of R G and B matrices of a picture which is supposed to be converted.
+- `dimension::Int64`: length of side of a mask
+"""
 function mini(picture, dimension)
-    
-    """
-    Function which convert a given picture with mask. At first it copies every RGB matrix and reproduces extreme pixels.
-    Then it creates new matrix filled with values calculated in minimumValue function.
-    
-    *Return list consisted of of new R G and B values.
-    
-    *param picture: tuple of R G and B matrices of a picture which is supposed to be converted
-    *param dimension: Int64 length of side of a mask
-    
-    """
-    
     dimR = size(picture[1])
     dimM = dimension
     mask = zeros(dimM,dimM)
@@ -248,51 +256,61 @@ function mini(picture, dimension)
         copied = matrix
         
         
-        helpHorizontal = copy(copied[1,:])    #kolumna o długości równej liczbie kolumn(długości wiersza) macierzy koloru
+        helpHorizontalTop = copied[1,:]    #first row of matrix
 
         for n in 1:((dimM-1)/2)
-            copied = [helpHorizontal';copied;helpHorizontal']    #dodaję wiersze z zerami na górze i na dole ((i-1)/2) razy
-        end #dodawanie wierszy                                   #transpozycja zamienia mi kolumnę na wiersz
+            copied = [helpHorizontalTop';copied] #adding at the begining of matrix first row of matrix ((dimM[1]-1)/2) times
+        end #adding rows                                   #transposition transforms column into row
 
+        
+        
+        helpHorizontalBottom = copied[end,:]    #last row of matrix
 
-        helpVertical = copy(copied[:,1])  #kolumna długości równej liczbie wierszy (długości kolumny) macierzy
-                                                                 #sopiowanej po przejściu przez pierwszą pętlę
+        for n in 1:((dimM-1)/2)
+            copied = [copied;helpHorizontalBottom'] #adding at the end of matrix last row of matrix ((dimM[1]-1)/2) times
+        end #adding rows                            
 
+        
+        
+        helpVerticalLeft = copied[:,1]  #first column of matrix transformed by for loops above
         for i in 1:((dimM-1)/2)
-            copied = [helpVertical  copied  helpVertical]  #dodaję kolumny z zerami z lewej i prawej ((j-1)/2) razy
-        end #dodawanie kolumn
+            copied = [helpVerticalLeft  copied]  #adding at the left side of matrix first column of matrix ((dimM[1]-1)/2) times
+        end #adding columns
+  
+        
+        
+        helpVerticalRight = copied[:,end]  #last column of matrix transformed by for loops above
+                                                                 
+        for i in 1:((dimM-1)/2)
+            copied = [copied  helpVerticalRight]  #adding at the right side of matrix last column of matrix ((dimM[2]-1)/2) times
+        end #adding columns
         
         dimC = size(copied)
 
-        newPixelValues = Array{Float64}(undef, dimR[1], dimR[2])  #rezerwuję miejsce w pamięci
+        newPixelValues = Array{Float64}(undef, dimR[1], dimR[2])  #reserving memory
         
         
         matrix = collect(minimumValue(copied, mask, x,y) for x in 1:Int64(dimC[1] - dimM + 1 ), y in 1:Int64(dimC[2] - dimM + 1))
         
         push!(newColorList,matrix)
         
-    end #przejście w pętli po skokpiowanych macierzach kolorów 
-        #mam już 3 zmienione macierze
+    end #loop for R G B matrices 
     
     
     return newColorList
-end #fucntion
+end #function
 
+"""
+Convert a given picture with mask. At first it copy every RGB matrix and reproduce extreme pixels.
+Then create new matrix filled with values calculated in maximumValue function
+and return list consisted of of new R G and B values. 
 
+#Arguments
+- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: tuple of R G and B matrices of a picture 
+   which is supposed to be converted.
+- `dimension::Int64`: length of side of a mask
+"""
 function maxi(picture, dimension)
-    
-    """
-    Function which convert a given picture with mask. At first it copies every RGB matrix and reproduces extreme pixels.
-    Then it creates new matrix filled with values calculated in maximumValue function.
-    
-    *Return list consisted of of new R G and B values.
-    
-    *param picture: tuple of R G and B matrices of a picture which is supposed to be converted
-    *param dimension: Int64 length of side of a mask
-    
-    """
-    
-    
     dimR = size(picture[1])
     dimM = dimension
     mask = zeros(dimM,dimM)
@@ -307,48 +325,64 @@ function maxi(picture, dimension)
         copied = matrix
         
         
-        helpHorizontal = copy(copied[1,:])    #kolumna o długości równej liczbie kolumn(długości wiersza) macierzy koloru
+        helpHorizontalTop = copied[1,:]    #first row of matrix
 
         for n in 1:((dimM-1)/2)
-            copied = [helpHorizontal';copied;helpHorizontal']    #dodaję wiersze z zerami na górze i na dole ((i-1)/2) razy
-        end #dodawanie wierszy                                   #transpozycja zamienia mi kolumnę na wiersz
+            copied = [helpHorizontalTop';copied] #adding at the begining of matrix first row of matrix ((dimM[1]-1)/2) times
+        end #adding rows                                   #transposition transforms column into row
 
+        
+        
+        helpHorizontalBottom = copied[end,:]    #last row of matrix
 
-        helpVertical = copy(copied[:,1])  #kolumna długości równej liczbie wierszy (długości kolumny) macierzy
-                                                                 #sopiowanej po przejściu przez pierwszą pętlę
+        for n in 1:((dimM-1)/2)
+            copied = [copied;helpHorizontalBottom'] #adding at the end of matrix last row of matrix ((dimM[1]-1)/2) times
+        end #adding rows                            
 
+        
+        
+        helpVerticalLeft = copied[:,1]  #first column of matrix transformed by for loops above
         for i in 1:((dimM-1)/2)
-            copied = [helpVertical  copied  helpVertical]  #dodaję kolumny z zerami z lewej i prawej ((j-1)/2) razy
-        end #dodawanie kolumn
+            copied = [helpVerticalLeft  copied]  #adding at the left side of matrix first column of matrix ((dimM[1]-1)/2) times
+        end #adding columns
+  
+        
+        
+        
+        helpVerticalRight = copied[:,end]  #last column of matrix transformed by for loops above
+                                                                 
+        for i in 1:((dimM-1)/2)
+            copied = [copied  helpVerticalRight]  #adding at the right side of matrix last column of matrix ((dimM[2]-1)/2) times
+        end #adding columns
+        
         
         dimC = size(copied)
 
-        newPixelValues = Array{Float64}(undef, dimR[1], dimR[2])  #rezerwuję miejsce w pamięci
+        newPixelValues = Array{Float64}(undef, dimR[1], dimR[2])  #reserving memory
         
         
         matrix = collect(maximumValue(copied, mask, x,y) for x in 1:Int64(dimC[1] - dimM + 1 ), y in 1:Int64(dimC[2] - dimM + 1))
         
         push!(newColorList,matrix)
         
-    end #przejście w pętli po skokpiowanych macierzach kolorów 
-        #mam już 3 zmienione macierze
+    end #loop for R G B matrices 
     
     
     return newColorList
-end #fucntion
+end #function
 
+"""
+Convert blue matrice of a given picture with mask. At first copy every of RGB matrices 
+and reproduce extreme pixels of B matrix.
+Then create new B matrix filled with values calculated in layingMask function 
+and return list consisted of of R G and new B values.
 
+#Arguments
+- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: tuple of R G and B matrices of a picture 
+   which is supposed to be converted.
+- `typeofmask::Array{Float64,2}`: mask which is a result of typeofmask function.
+"""
 function whatIfJustBlue(picture, typeofmask)
-    """
-    Function which convert blue matrice of a given picture with mask. At first it copies every RGB matrix and reproduces extreme pixels.
-    Then it creates new matrix filled with values calculated in layingMask function.
-    
-    *Return list consisted of of R G and new B values.
-    
-    *param picture: tuple of R G and B matrices of a picture which is supposed to be converted
-    *param typeofmask: mask which is a result of typeofmask function
-    
-    """
     mask = typeofmask
     
     dimR = size(picture[1])
@@ -364,24 +398,40 @@ function whatIfJustBlue(picture, typeofmask)
       
     
     
-    helpHorizontal = copy(copied[1,:])    #kolumna o długości równej liczbie kolumn(długości wiersza) macierzy koloru
+    helpHorizontalTop = copied[1,:]    #first row of matrix
 
-    for n in 1:((dimM[1]-1)/2)
-        copied = [helpHorizontal';copied;helpHorizontal']    #dodaję wiersze z zerami na górze i na dole ((i-1)/2) razy
-    end #dodawanie wierszy                                   #transpozycja zamienia mi kolumnę na wiersz
+        for n in 1:((dimM[1]-1)/2)
+            copied = [helpHorizontalTop';copied] #adding at the begining of matrix first row of matrix ((dimM[1]-1)/2) times
+        end #adding rows                                   #transposition transforms column into row
 
+        
+        
+        helpHorizontalBottom = copied[end,:]    #last row of matrix
 
-    helpVertical = copy(copied[:,1])  #kolumna długości równej liczbie wierszy (długości kolumny) macierzy
-                                                                 #sopiowanej po przejściu przez pierwszą pętlę
+        for n in 1:((dimM[1]-1)/2)
+            copied = [copied;helpHorizontalBottom'] #adding at the end of matrix last row of matrix ((dimM[1]-1)/2) times
+        end #adding rows                            
 
-    for i in 1:((dimM[2]-1)/2)
-        copied = [helpVertical  copied  helpVertical]  #dodaję kolumny z zerami z lewej i prawej ((j-1)/2) razy
-    end #dodawanie kolumn
+        
+        
+        helpVerticalLeft = copied[:,1]  #first column of matrix transformed by for loops above
+        for i in 1:((dimM[2]-1)/2)
+            copied = [helpVerticalLeft  copied]  #adding at the left side of matrix first column of matrix ((dimM[1]-1)/2) times
+        end #adding columns
+  
+        
+        
+        
+        helpVerticalRight = copied[:,end]  #last column of matrix transformed by for loops above
+                                                                 
+        for i in 1:((dimM[2]-1)/2)
+            copied = [copied  helpVerticalRight]  #adding at the right side of matrix last column of matrix ((dimM[2]-1)/2) times
+        end #adding columns
         
     
     dimC = size(copied)
 
-    newPixelValues = Array{Float64}(undef, dimR[1], dimR[2])  #rezerwuję miejsce w pamięci
+    newPixelValues = Array{Float64}(undef, dimR[1], dimR[2]) #reserving memory
         
         
     B = collect(layingMask(copied, mask, x,y) for x in 1:Int64(dimC[1] - dimM[1] + 1 ), y in 1:Int64(dimC[2] - dimM[2] + 1))
@@ -389,4 +439,4 @@ function whatIfJustBlue(picture, typeofmask)
     push!(newColorList,B)
     
     return newColorList
-end #fucntion
+end #function
