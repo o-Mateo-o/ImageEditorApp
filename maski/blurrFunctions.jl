@@ -3,10 +3,10 @@
 #####################
 
 """
-Calculate value of new pixel using mask.
+Calculate new value of pixel using mask.
 
 #Arguments
-- `copied::Array{Float64,2}`: copy of an R or G or B.
+- `copied::Array{Float64,2}`: copy of an color matrice.
 - `mask::Array{Float64,2}`: mask used in transition.
 - `x::Int64`: first coordinate of left-upper corner of copied.
 - `y::Int64`: second coordinate of left-upper corner of copied.
@@ -17,10 +17,10 @@ function layingMask(copied, mask, x, y)
 end
 
 """
-Assign to pixel minimum value from the surrounding ones determined by mask.
+Assign to the pixel minimum value from surrounding ones, determined by mask.
 
 #Arguments
-- `copied::Array{Float64,2}`: copy of an R or G or B.
+- `copied::Array{Float64,2}`: copy of an color matrice.
 - `mask::Array{Float64,2}`: mask used in transition.
 - `x::Int64`: first coordinate of left-upper corner of copied.
 - `y::Int64`: second coordinate of left-upper corner of copied.  
@@ -31,10 +31,10 @@ function minimumValue(copied, mask, x, y)
 end
 
 """
-Assign to pixel maximum value from the surrounding determined by mask.
+Assign to the pixel maximum value from the surrounding ones, determined by mask.
 
 #Arguments
-- `copied::Array{Float64,2}`: copy of an R or G or B .
+- `copied::Array{Float64,2}`: copy of an color matrice .
 - `mask::Array{Float64,2}`: mask used in transition.
 - `x::Int64`: first coordinate of left-upper corner of copied.
 - `y::Int64`: second coordinate of left-upper corner of copied.  
@@ -45,13 +45,13 @@ function maximumValue(copied, mask, x, y)
 end
 
 """
-Overlay given picture with given type of mask. 
+Convert given picture with specifies type of mask. 
 Copy every RGB matrix and reproduce extreme pixels. 
-Create new matrix with values calculated by layingMask function and return list of new R, G and B matrices.
+Create new matrix with values calculated by layingMask function and return list of new R, G, B matrices.
 
 #Arguments
-- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: tuple of R G and B matrices of a picture.
-- `typeofmask::Array{Float64,2}`: mask, result of typeofmask function.
+- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: R, G, B matrices tuple
+- `typeofmask::Array{Float64,2}`: mask, determined by typeofmask function.
 """
 function converting(picture, typeofmask)
     mask = typeofmask
@@ -207,7 +207,7 @@ end
 # Edge detecttion
 #####
 """
-Generate mask to detect edges on the picture in a given direction.
+Generate mask to detect edges on the picture in given direction.
 
 #Arguments
 - `dim::Int64`: length of side of a mask.
@@ -238,7 +238,7 @@ Create new matrix filled with values calculated by minimumValue function
 and return list of of new R G and B values. 
 
 #Arguments
-- `picture::`: tuple (R, G, B) matrices of a picture.
+- `picture::`: R, G, B matrices tuple.
 - `dimension::Int64`: length of side of a mask.
 """
 function mini(picture, dimension)
@@ -306,7 +306,7 @@ Then create new matrix with values calculated by maximumValue function
 and return list of new R G and B values. 
 
 #Arguments
-- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: tuple of (R, G, B) matrices of a picture.
+- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: R, G, B matrices tuple.
 - `dimension::Int64`: length of a side of the mask.
 """
 function maxi(picture, dimension)
@@ -377,7 +377,7 @@ Then create new B matrix with values calculated by layingMask function
 and return list of R G and new B values.
 
 #Arguments
-- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: tuple of R G and B matrices of a picture.
+- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: R, G, B matrices tuple.
 - `typeofmask::Array{Float64,2}`: mask which is a result of typeofmask function.
 """
 function whatIfJustBlue(picture, typeofmask)
