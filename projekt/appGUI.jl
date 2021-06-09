@@ -1,11 +1,18 @@
+include("ManagePic.jl")
+using .ManagePic
 using Gtk, Images, ImageView
+
 #po otworzeniu pliku jak ktoś zamknie otwieracz to error wypala
+
+
+
 
 
 bld = GtkBuilder(filename="projekt/GUILayout.glade")
 saving_path = ""
 save_flag = false
 undo_counter = -1
+image_dict = Nothing
 
 current_image = Array{RGB{Normed{UInt8,8}},2}
 current_image_u = Array{RGB{Normed{UInt8,8}},2}
@@ -15,7 +22,11 @@ function new_current_image(new_image, canvas)
     global current_image_u = current_image
     global current_image = new_image
     global undo_counter += 1
-    imshow(canvas, new_image)
+
+    d = imshow(canvas, new_image)
+    #imfill()
+    global image_dict = d
+
 end
 function undo_image(canvas)
     if undo_counter > 0
@@ -36,6 +47,8 @@ range_right_val = 0
 range_left_val = 0
 range_up_val = 0
 range_down_val = 0 
+selection_ru = (Nothing, Nothing)
+selection_ld = (Nothing, Nothing)
 
 # ELEMENTS BUILDING
 
@@ -120,7 +133,7 @@ print(a)
 
 # CALLBACK FUNCTIONS
 function open_fileopen(w)
-    path = open_dialog("Pick an image file", GtkNullContainer(), (GtkFileFilter("*.png, *.jpg", name="All supported formats"), "*.png", "*.jpg"))
+    path = open_dialog("Pick an image file", GtkNullContainer(), (GtkFileFilter("*.jpg", name="All supported formats"), "*.jpg"))
     img = load(path)
     new_current_image(img, cnv)
 end
@@ -212,18 +225,49 @@ function sharp_update(w)
 end
 
 function range_open(w)
-
+    global range_left_val = get_gtk_property(a_range_left, :value, Int)
+    global range_right_val = get_gtk_property(a_range_right, :value, Int)
+    global range_up_val = get_gtk_property(a_range_up, :value, Int)
+    global range_down_val = get_gtk_property(a_range_down, :value, Int)
+    show_selection(current_image, range_left_val, range_right_val, range_up_val, range_down_val)
     show(scale_left)
     show(scale_right)
     show(scale_down)
     show(scale_up)
     show(b_range_cancel)
     show(b_range_ok)
-
 end
-function range_accept(w)
+
+
+function show_selection(image, range_left, range_right, range_up, range_down)   
     
-    print("")
+    r = (Float64.(red.(image)))
+    g = (Float64.(green.(image)))
+    b = (Float64.(blue.(image)))
+
+    img_height = size(r)[1]
+    img_width = size(r)[2]
+
+    ru = (max(Int(floor(range_up*img_height/100)),1), max(Int(floor((100-range_right)*img_width/100)),1))
+    ld = (max(Int(floor((100-range_down)*img_height/100)),1), max(Int(floor(range_left*img_width/100)),1))
+    
+    color_matrices = [r, g, b]
+
+    for i in 1:3
+        original_matrix = copy(color_matrices[i])
+       
+        color_matrices[i] = original_matrix .* 0.3
+        color_matrices[i][ru[1]:ld[1], ld[2]:ru[2]] = original_matrix[ru[1]:ld[1], ld[2]:ru[2]]
+    end
+    
+    global selection_ru = ru
+    global selection_ld = ld
+    selection_image = matriceRGB(color_matrices...)
+    imshow(cnv, selection_image)
+end #RGB
+
+function range_accept(w)
+
 end
 function range_close(w)
     hide(scale_left)
@@ -232,31 +276,37 @@ function range_close(w)
     hide(scale_up)
     hide(b_range_cancel)
     hide(b_range_ok)
+    imshow(cnv, current_image)
+
 end
 
 function update_range_left(w)
     global range_left_val = get_gtk_property(w, :value, Int)
     if range_left_val + range_right_val >= 99
         set_gtk_property!(w, :value, 99-range_right_val)
-    end 
+    end
+    show_selection(current_image, range_left_val, range_right_val, range_up_val, range_down_val)
 end
 function update_range_right(w)
     global range_right_val = get_gtk_property(w, :value, Int)
     if range_right_val + range_left_val >= 99
         set_gtk_property!(w, :value, 99-range_left_val)
-    end 
+    end
+    show_selection(current_image, range_left_val, range_right_val, range_up_val, range_down_val)
 end
 function update_range_up(w)
     global range_up_val = get_gtk_property(w, :value, Int)
     if range_up_val + range_down_val >= 99
         set_gtk_property!(w, :value, 99-range_down_val)
-    end 
+    end
+    show_selection(current_image, range_left_val, range_right_val, range_up_val, range_down_val)
 end
 function update_range_down(w)
     global range_down_val = get_gtk_property(w, :value, Int)
     if range_down_val + range_up_val >= 99
         set_gtk_property!(w, :value, 99-range_up_val)
-    end 
+    end
+    show_selection(current_image, range_left_val, range_right_val, range_up_val, range_down_val)
 end
     
 
