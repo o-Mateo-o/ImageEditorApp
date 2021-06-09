@@ -45,7 +45,7 @@ function maximumValue(copied, mask, x, y)
 end
 
 """
-Convert given picture with specifies type of mask. 
+Convert given picture with specified type of mask. 
 Copy every RGB matrix and reproduce extreme pixels. 
 Create new matrix with values calculated by layingMask function and return list of new R, G, B matrices.
 
@@ -204,7 +204,7 @@ end
 
 
 #####
-# Edge detecttion
+# Edge detection
 #####
 """
 Generate mask to detect edges on the picture in given direction.
@@ -238,7 +238,7 @@ Create new matrix filled with values calculated by minimumValue function
 and return list of of new R G and B values. 
 
 #Arguments
-- `picture::`: R, G, B matrices tuple.
+- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: R, G, B matrices tuple.
 - `dimension::Int64`: length of side of a mask.
 """
 function mini(picture, dimension)
