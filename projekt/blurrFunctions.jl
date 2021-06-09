@@ -68,22 +68,22 @@ function converting(picture, typeofmask)
         helpHorizontalTop = copied[1,:]    # first row of matrix
         for n in 1:((dimM[1] - 1) / 2)
             copied = [helpHorizontalTop';copied] # adding upper bufor ((dimM[1]-1)/2) times
-        end # adding rows
+        end 
 
         helpHorizontalBottom = copied[end,:]    # last row of matrix
         for n in 1:((dimM[1] - 1) / 2)
             copied = [copied;helpHorizontalBottom'] # adding bottom bufor ((dimM[1]-1)/2) times
-        end # adding rows                            
+        end                             
 
         helpVerticalLeft = copied[:,1]  # first column of matrix 
         for i in 1:((dimM[2] - 1) / 2)
             copied = [helpVerticalLeft  copied]  # adding left bufor ((dimM[1]-1)/2) times
-        end # adding columns
+        end
   
         helpVerticalRight = copied[:,end]  # last column of matrix                                                       
         for i in 1:((dimM[2] - 1) / 2)
             copied = [copied  helpVerticalRight]  # adding right bufor ((dimM[2]-1)/2) times
-        end # adding columns
+        end
         
         dimC = size(copied)
         newPixelValues = Array{Float64}(undef, dimR[1], dimR[2])  # reserving memory
@@ -92,7 +92,7 @@ function converting(picture, typeofmask)
         push!(newColorList, matrix)   
     end # loop for R G B matrices 
     return newColorList
-end # function
+end # converting
 
 
 ######################
@@ -233,22 +233,22 @@ function mini(picture, dimension)
         helpHorizontalTop = copied[1,:]    # first row of matrix
         for n in 1:((dimM - 1) / 2)
             copied = [helpHorizontalTop';copied] # adding upper bufor ((dimM[1]-1)/2) times
-        end # adding rows
+        end 
 
         helpHorizontalBottom = copied[end,:]    # last row of matrix
         for n in 1:((dimM - 1) / 2)
             copied = [copied;helpHorizontalBottom'] # adding bottom bufor ((dimM[1]-1)/2) times
-        end # adding rows                            
+        end                             
 
         helpVerticalLeft = copied[:,1]  # first column of matrix
         for i in 1:((dimM - 1) / 2)
             copied = [helpVerticalLeft  copied]  # adding left bufor ((dimM[1]-1)/2) times
-        end # adding columns
+        end
   
         helpVerticalRight = copied[:,end]  # last column of matrix                                                      
         for i in 1:((dimM - 1) / 2)
             copied = [copied  helpVerticalRight]  # adding right bufor ((dimM[2]-1)/2) times
-        end # adding columns
+        end
         
         dimC = size(copied)
         newPixelValues = Array{Float64}(undef, dimR[1], dimR[2])  # reserving memory
@@ -257,7 +257,7 @@ function mini(picture, dimension)
         push!(newColorList, matrix)
     end # loop for R G B matrices 
     return newColorList
-end # function
+end # mini
 
 """
 Convert a given picture with mask. Copy every RGB matrix and reproduce extreme pixels.
@@ -283,22 +283,22 @@ function maxi(picture, dimension)
         helpHorizontalTop = copied[1,:]    # first row of matrix
         for n in 1:((dimM - 1) / 2)
             copied = [helpHorizontalTop';copied] # adding upper bufor ((dimM[1]-1)/2) times
-        end # adding rows
+        end
 
         helpHorizontalBottom = copied[end,:]    # last row of matrix
         for n in 1:((dimM - 1) / 2)
             copied = [copied;helpHorizontalBottom'] # adding bottom bufor ((dimM[1]-1)/2) times
-        end # adding rows                            
+        end
 
         helpVerticalLeft = copied[:,1]  # first column of matrix
         for i in 1:((dimM - 1) / 2)
             copied = [helpVerticalLeft  copied]  # adding left bufor ((dimM[1]-1)/2) times
-        end # adding columns
+        end
   
         helpVerticalRight = copied[:,end]  # last column of matrix                                                      
         for i in 1:((dimM - 1) / 2)
             copied = [copied  helpVerticalRight] # adding right bufor ((dimM[2]-1)/2) times
-        end # adding columns
+        end
         
         dimC = size(copied)
         newPixelValues = Array{Float64}(undef, dimR[1], dimR[2])  # reserving memory
@@ -307,8 +307,11 @@ function maxi(picture, dimension)
         push!(newColorList, matrix)  
     end # loop for R G B matrices 
     return newColorList
-end
+end # maxi
 
+########
+# WHATIF
+########
 """
 Convert blue matrice of a given picture with mask. Copy every of RGB matrices 
 and reproduce extreme pixels of B matrix.
@@ -356,4 +359,4 @@ function whatIfJustBlue(picture, typeofmask)
     push!(newColorList, B)
     
     return newColorList
-end # function
+end # whatIfJustBlue
