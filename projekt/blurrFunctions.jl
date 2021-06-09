@@ -55,63 +55,42 @@ Create new matrix with values calculated by layingMask function and return list 
 """
 function converting(picture, typeofmask)
     mask = typeofmask
-    
     dimR = size(picture[1])
     dimM = size(mask)
-
     R = copy(picture[1])
     G = copy(picture[2])
-    B = copy(picture[3])
-                
+    B = copy(picture[3])            
     newColorList = Array([])
     
     @simd for matrix in [R, G, B]
-    
         copied = matrix
         
-        
         helpHorizontalTop = copied[1,:]    # first row of matrix
-
         for n in 1:((dimM[1] - 1) / 2)
-            copied = [helpHorizontalTop';copied] # adding at the begining of matrix first row of matrix ((dimM[1]-1)/2) times
-        end # adding rows                                   #transposition transforms column into row
+            copied = [helpHorizontalTop';copied] # adding upper bufor ((dimM[1]-1)/2) times
+        end # adding rows
 
-        
-        
         helpHorizontalBottom = copied[end,:]    # last row of matrix
-
         for n in 1:((dimM[1] - 1) / 2)
-            copied = [copied;helpHorizontalBottom'] # adding at the end of matrix last row of matrix ((dimM[1]-1)/2) times
+            copied = [copied;helpHorizontalBottom'] # adding bottom bufor ((dimM[1]-1)/2) times
         end # adding rows                            
 
-        
-        
-        helpVerticalLeft = copied[:,1]  # first column of matrix transformed by for loops above
+        helpVerticalLeft = copied[:,1]  # first column of matrix 
         for i in 1:((dimM[2] - 1) / 2)
-            copied = [helpVerticalLeft  copied]  # adding at the left side of matrix first column of matrix ((dimM[1]-1)/2) times
+            copied = [helpVerticalLeft  copied]  # adding left bufor ((dimM[1]-1)/2) times
         end # adding columns
   
-        
-        
-        helpVerticalRight = copied[:,end]  # last column of matrix transformed by for loops above
-                                                                 
+        helpVerticalRight = copied[:,end]  # last column of matrix                                                       
         for i in 1:((dimM[2] - 1) / 2)
-            copied = [copied  helpVerticalRight]  # adding at the right side of matrix last column of matrix ((dimM[2]-1)/2) times
+            copied = [copied  helpVerticalRight]  # adding right bufor ((dimM[2]-1)/2) times
         end # adding columns
         
-        
         dimC = size(copied)
-
         newPixelValues = Array{Float64}(undef, dimR[1], dimR[2])  # reserving memory
-        
-        
         matrix = collect(layingMask(copied, mask, x, y) for x in 1:Int64(dimC[1] - dimM[1] + 1), y in 1:Int64(dimC[2] - dimM[2] + 1))
         
-        push!(newColorList, matrix)
-        
+        push!(newColorList, matrix)   
     end # loop for R G B matrices 
-
-    
     return newColorList
 end # function
 
@@ -120,7 +99,6 @@ end # function
 # Low-pass filters
 ######################
 
-# auxiliary functions
 """
 Generate mask to blurr the picture.
 
@@ -224,12 +202,11 @@ function detectingEdges(dim, direction)
         mask[1,Int64((dim - 1) / 2 + 1)] = -1
     elseif direction == "v"
        mask[Int64((dim - 1) / 2 + 1),1] = -1
-   elseif direction == "d"
+    elseif direction == "d"
        mask[1,1] = -1
     end
    
     return mask
-   
 end
 
 """
@@ -247,56 +224,38 @@ function mini(picture, dimension)
     mask = zeros(dimM, dimM)
     R = copy(picture[1])
     G = copy(picture[2])
-    B = copy(picture[3])
-                
+    B = copy(picture[3])          
     newColorList = Array([])
     
     @simd for matrix in [R, G, B]
-    
         copied = matrix
         
-        
         helpHorizontalTop = copied[1,:]    # first row of matrix
-
         for n in 1:((dimM - 1) / 2)
-            copied = [helpHorizontalTop';copied] # adding at the begining of matrix first row of matrix ((dimM[1]-1)/2) times
-        end # adding rows                                   #transposition transforms column into row
+            copied = [helpHorizontalTop';copied] # adding upper bufor ((dimM[1]-1)/2) times
+        end # adding rows
 
-        
-        
         helpHorizontalBottom = copied[end,:]    # last row of matrix
-
         for n in 1:((dimM - 1) / 2)
-            copied = [copied;helpHorizontalBottom'] # adding at the end of matrix last row of matrix ((dimM[1]-1)/2) times
+            copied = [copied;helpHorizontalBottom'] # adding bottom bufor ((dimM[1]-1)/2) times
         end # adding rows                            
 
-        
-        
-        helpVerticalLeft = copied[:,1]  # first column of matrix transformed by for loops above
+        helpVerticalLeft = copied[:,1]  # first column of matrix
         for i in 1:((dimM - 1) / 2)
-            copied = [helpVerticalLeft  copied]  # adding at the left side of matrix first column of matrix ((dimM[1]-1)/2) times
+            copied = [helpVerticalLeft  copied]  # adding left bufor ((dimM[1]-1)/2) times
         end # adding columns
   
-        
-        
-        helpVerticalRight = copied[:,end]  # last column of matrix transformed by for loops above
-                                                                 
+        helpVerticalRight = copied[:,end]  # last column of matrix                                                      
         for i in 1:((dimM - 1) / 2)
-            copied = [copied  helpVerticalRight]  # adding at the right side of matrix last column of matrix ((dimM[2]-1)/2) times
+            copied = [copied  helpVerticalRight]  # adding right bufor ((dimM[2]-1)/2) times
         end # adding columns
         
         dimC = size(copied)
-
         newPixelValues = Array{Float64}(undef, dimR[1], dimR[2])  # reserving memory
-        
-        
         matrix = collect(minimumValue(copied, mask, x, y) for x in 1:Int64(dimC[1] - dimM + 1), y in 1:Int64(dimC[2] - dimM + 1))
         
         push!(newColorList, matrix)
-        
     end # loop for R G B matrices 
-    
-    
     return newColorList
 end # function
 
@@ -315,60 +274,40 @@ function maxi(picture, dimension)
     mask = zeros(dimM, dimM)
     R = copy(picture[1])
     G = copy(picture[2])
-    B = copy(picture[3])
-                
+    B = copy(picture[3])           
     newColorList = Array([])
     
     @simd for matrix in [R, G, B]
-    
         copied = matrix
         
-        
         helpHorizontalTop = copied[1,:]    # first row of matrix
-
         for n in 1:((dimM - 1) / 2)
-            copied = [helpHorizontalTop';copied] # adding at the begining of matrix first row of matrix ((dimM[1]-1)/2) times
-        end # adding rows                                   #transposition transforms column into row
+            copied = [helpHorizontalTop';copied] # adding upper bufor ((dimM[1]-1)/2) times
+        end # adding rows
 
-        
-        
         helpHorizontalBottom = copied[end,:]    # last row of matrix
-
         for n in 1:((dimM - 1) / 2)
-            copied = [copied;helpHorizontalBottom'] # adding at the end of matrix last row of matrix ((dimM[1]-1)/2) times
+            copied = [copied;helpHorizontalBottom'] # adding bottom bufor ((dimM[1]-1)/2) times
         end # adding rows                            
 
-        
-        
-        helpVerticalLeft = copied[:,1]  # first column of matrix transformed by for loops above
+        helpVerticalLeft = copied[:,1]  # first column of matrix
         for i in 1:((dimM - 1) / 2)
-            copied = [helpVerticalLeft  copied]  # adding at the left side of matrix first column of matrix ((dimM[1]-1)/2) times
+            copied = [helpVerticalLeft  copied]  # adding left bufor ((dimM[1]-1)/2) times
         end # adding columns
   
-        
-        
-        
-        helpVerticalRight = copied[:,end]  # last column of matrix transformed by for loops above
-                                                                 
+        helpVerticalRight = copied[:,end]  # last column of matrix                                                      
         for i in 1:((dimM - 1) / 2)
-            copied = [copied  helpVerticalRight]  # adding at the right side of matrix last column of matrix ((dimM[2]-1)/2) times
+            copied = [copied  helpVerticalRight] # adding right bufor ((dimM[2]-1)/2) times
         end # adding columns
         
-        
         dimC = size(copied)
-
         newPixelValues = Array{Float64}(undef, dimR[1], dimR[2])  # reserving memory
-        
-        
         matrix = collect(maximumValue(copied, mask, x, y) for x in 1:Int64(dimC[1] - dimM + 1), y in 1:Int64(dimC[2] - dimM + 1))
         
-        push!(newColorList, matrix)
-        
+        push!(newColorList, matrix)  
     end # loop for R G B matrices 
-    
-    
     return newColorList
-end # function
+end
 
 """
 Convert blue matrice of a given picture with mask. Copy every of RGB matrices 
@@ -382,58 +321,38 @@ and return list of R G and new B values.
 """
 function whatIfJustBlue(picture, typeofmask)
     mask = typeofmask
-    
     dimR = size(picture[1])
     dimM = size(mask)
-
     R = copy(picture[1])
     G = copy(picture[2])
-    B = copy(picture[3])
-                
+    B = copy(picture[3])           
     newColorList = [R,G]
     
     copied = B
-      
     
-    
-    helpHorizontalTop = copied[1,:]    # first row of matrix
-
+    helpHorizontalTop = copied[1,:]    
     for n in 1:((dimM[1] - 1) / 2)
-        copied = [helpHorizontalTop';copied] # adding at the begining of matrix first row of matrix ((dimM[1]-1)/2) times
-    end # adding rows                                   #transposition transforms column into row
+        copied = [helpHorizontalTop';copied]
+    end
 
-        
-        
-    helpHorizontalBottom = copied[end,:]    # last row of matrix
-
+    helpHorizontalBottom = copied[end,:]
     for n in 1:((dimM[1] - 1) / 2)
-        copied = [copied;helpHorizontalBottom'] # adding at the end of matrix last row of matrix ((dimM[1]-1)/2) times
-    end # adding rows                            
+        copied = [copied;helpHorizontalBottom']
+    end                          
 
-        
-        
-    helpVerticalLeft = copied[:,1]  # first column of matrix transformed by for loops above
+    helpVerticalLeft = copied[:,1]
     for i in 1:((dimM[2] - 1) / 2)
-        copied = [helpVerticalLeft  copied]  # adding at the left side of matrix first column of matrix ((dimM[1]-1)/2) times
-    end # adding columns
-  
-        
-        
-        
-    helpVerticalRight = copied[:,end]  # last column of matrix transformed by for loops above
-                                                                 
+        copied = [helpVerticalLeft  copied]
+    end
+     
+    helpVerticalRight = copied[:,end] 
     for i in 1:((dimM[2] - 1) / 2)
-        copied = [copied  helpVerticalRight]  # adding at the right side of matrix last column of matrix ((dimM[2]-1)/2) times
-    end # adding columns
-        
+        copied = [copied  helpVerticalRight]
+    end  
     
     dimC = size(copied)
-
-    newPixelValues = Array{Float64}(undef, dimR[1], dimR[2]) # reserving memory
-        
-        
+    newPixelValues = Array{Float64}(undef, dimR[1], dimR[2]) # reserving memory 
     B = collect(layingMask(copied, mask, x, y) for x in 1:Int64(dimC[1] - dimM[1] + 1), y in 1:Int64(dimC[2] - dimM[2] + 1))
-     
     push!(newColorList, B)
     
     return newColorList
