@@ -33,40 +33,26 @@ Change lightness.
 - `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
 - `parameter`::Float64`: in range [-100, 100]; negative value create image with lower lightness
 """
-function changeLightness(rgb, parameter) # watrość parametru jest w zakresie [-100, 100], gdy wartość jest > 0 wtedy jest rozjaśnianie, a gdy < 0 przyciemnianie
-
-    r, g, b = rgb
-    
-    Cmax, middleValue, Cmin = getValues(rgb)
-    
-    value = parameter / 100
-    
-    if value > 0 && value <= 1
-        # rozjaśnianie bo współczynnik dodatni
-        diff = 1 .- Cmin
-        newLowValue = Cmin .+ min.(diff, value)
-        increase = newLowValue .- Cmin
-        fraction = increase ./ diff
-        newHighValue = Cmax .+ ((1 .- Cmax) .* fraction)
-        newMiddleValue = middleValue .+ ((1 .- middleValue) .* fraction)
-    
-        nR, nG, nB = setValuesLighten(rgb, newHighValue, newMiddleValue, newLowValue)
-        return [nR, nG, nB] 
-    elseif value < 0 && value >= -1
-        value = abs(value)
-        # przyciemnianie bo współczynnik ujemny
-        newHighValue = Cmax .- min.(Cmax, value)
-        fraction = (Cmax .- newHighValue) ./ (Cmax)
-        newMiddleValue = middleValue .- (middleValue .* fraction)
-        newLowValue = Cmin .- (Cmin .* fraction)
-    
-        nR, nG, nB = setValuesDarken(rgb, newHighValue, newMiddleValue, newLowValue)
-        return [nR, nG, nB]
-        
-    elseif value == 0
-        return [r, g, b]
+function changeLightness(rgb, value) #wartosc [-100,100]
+    if value <= 100 && value >= -100 && (typeof(value) == Float64 || typeof(value) == Int64)
+        point = value/100
+        if point > 0
+            r,g,b = rgb
+            newR = (1 .- r) .* point .+ r
+            newG = (1 .- g) .* point .+ g
+            newB = (1 .- b) .* point .+ b
+            return [newR, newG,newB]
+        else
+            h, s, l = rgb2hsl1(rgb)
+            newL = l .+ l .* point
+            tryplet = h, s, newL
+            newR, newG,newB = hsl2rgb1(tryplet)
+            return [newR, newG,newB]
+        end
+    else
+        return ("Error")
     end
-end    
+end 
 
 """
 Change saturation.
@@ -75,44 +61,22 @@ Change saturation.
 - `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
 - `parameter`::Float64`: in range [-100, 100], negative value create image with lower saturation
 """
-function changeSaturation(rgb, parameter)
-
-    r, g, b = rgb
-    gray = lightness(rgb)
-    
-    Cmax, middleValue, Cmin = getValues(rgb)
-    
-    value = parameter / 100
-    saturationRange = min.(1 .- gray, gray)
-    
-    if value > 0 && value <= 1
-        # zwiększenie nasycenia
-        maxChange = min.(1 .- Cmax, Cmin)
-        change = min.(saturationRange .* value, maxChange)
-        newHighValue = Cmax .+ change
-        newLowValue = Cmin .- change
-        middleRatio = (gray .- middleValue) ./ (gray .- Cmax)
-        newMiddleValue = gray .+ ((newHighValue .- gray) .* middleRatio)
-    
-        nR, nG, nB = setValuesSaturation(rgb, newHighValue, newMiddleValue, newLowValue)
-        return [nR, nG, nB]
-
-    elseif value < 0 && value >= -1
-        # zmniejszenie nasycenia
-        value = abs(value)
-        maxChange = gray .- Cmin
-        change = min.(saturationRange .* value, maxChange)    
-        newLowValue = Cmin .+ change
-        newHighValue = Cmax .- change
-        middleRatio = (gray .- middleValue) ./ (gray .- Cmax)
-        newMiddleValue = gray .+ ((newHighValue .- gray) .* middleRatio)
-    
-        nR, nG, nB = setValuesSaturation(rgb, newHighValue, newMiddleValue, newLowValue)
-        return [nR, nG, nB]
-        
-    elseif value == 0
-        return [r, g, b]
-    end  
+function changeSaturation(rgb, value)
+    if value <= 100 && value >= -100 && (typeof(value) == Float64 || typeof(value) == Int64)
+        point = value/100
+        h, s, l = rgb2hsl1(rgb)
+        if value >= 0
+            complementS = 1 .- s
+            newS = complementS .* point .+ s
+        else
+            newS = s .+ s .* point
+        end
+        tryplet = h, newS, l
+        r,g,b = hsl2rgb1(tryplet)
+        return [r,g,b]
+    else
+        return ("Error")
+    end
 end
 
 
