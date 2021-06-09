@@ -9,7 +9,7 @@ export generateMatricesRGB, matriceRGB, savePicture, savePictureRGB, rgb2hsl, hs
 Convert a file to color matrices.
 
 # Arguments
-- `filename`::String`: name of file to load
+- `filename`::String`: name of file to load.
 """
 function generateMatricesRGB(filename)
     img = load(filename)
@@ -42,7 +42,7 @@ Save a r g b matrices as a picture.
 - `b`::Array{Float, 2}` full-size matrix of blue color.
 """
 function savePicture(newFilename, r, g, b)
-    aa = matriceRGB(r,g,b) #z powrotem do RGB
+    aa = matriceRGB(r,g,b) 
     save(newFilename, aa)
 end #save
 
@@ -51,7 +51,7 @@ Save RGB matrice as a picture.
 
 # Arguments
 - `newFilename`::String`: name of file.
-- `RGB`::Array{Array{Float64,2},1}`: RGB matrices tuple
+- `RGB`::Array{Array{Float64,2},1}`: RGB matrices tuple.
 """
 function savePictureRGB(newFilename, RGB)
     savePicture(newFilename, RGB[1], RGB[2], RGB[3])
@@ -63,7 +63,7 @@ Convert RGB to HSL.
 Return image as HSL matrices tuple.
 
 # Arguments
-- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple.
 """
 function rgb2hsl(rgb)
     r, g, b = rgb
@@ -109,7 +109,7 @@ Convert HSL to RGB.
 Return image as RGB matrices tuple.
 
 #Arguments
-- `hsl`::Array{Array{Float64,2},1}`: HSL matrices tuple
+- `hsl`::Array{Array{Float64,2},1}`: HSL matrices tuple.
 """
 function hsl2rgb(hsl)
     h, s, l = hsl
@@ -157,7 +157,7 @@ end
 Count lightness.
 
 Arduments:
-- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+- `rgb`::Array{Array{Float64,2},1}`: r, g, b matrices tuple.
 """
 function lightness(rgb)
     r, g, b = rgb
