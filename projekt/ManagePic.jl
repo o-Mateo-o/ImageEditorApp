@@ -16,7 +16,7 @@ function generateMatricesRGB(filename)
     r = (Float64.(red.(img)))
     g = (Float64.(green.(img)))
     b = (Float64.(blue.(img)))
-    return(r,g,b)
+    return[r,g,b]
 end #RGB
 
 """
