@@ -1,12 +1,3 @@
-# testscale.jl - scale.jl file with presentation features 
-using Images # Images - to load the picture into screen (for presentation purposes)
-###################################################################################
-
-
-include(raw"C:\Users\cp\pakiety grafika proj\ManagingFiles\ManagePic.jl")
-using .ManagePic
-
-
 ##################################################################################
 # AFFINE TRANSITION
 ##################################################################################
@@ -208,7 +199,7 @@ function transform(initValues, ld, ru, origin, parameters, translVectorTpl)
 end
 
 ##################################################################################
-# GENERAL
+# GENERAL TRANSFORMATION FUNCTIONS
 ##################################################################################
 
 """
@@ -304,7 +295,9 @@ function selectionTransform(initValues, ld, ru, transfList)
     return merge(initValues, floating, mask, ld, ru)
 end
     
-#mirror
+##################################################################################
+# SYMMETRY
+##################################################################################
 function mirror(RGB, ax)
     if ax == :x 
         dim = 1 
@@ -316,12 +309,3 @@ function mirror(RGB, ax)
     newRGB = reverse.(RGB, dims=dim)
     return newRGB 
 end
-
-###################################################################################
-
-imagePath = raw"C:\Users\cp\pakiety grafika proj\obrazki\mkl.jpg"
-initValues = generate_matrices_RGB(imagePath)
-
-@time result = selectionTransform(initValues, (400, 300), (200, 700), [ ((300, 500), [('r', 100), ('s', (2, 1))], (20.4, -40)) ])
-save_pictures(raw"C:\Users\cp\pakiety grafika proj\obrazki\generated.png", result...)
-load(raw"C:\Users\cp\pakiety grafika proj\obrazki\generated.png")
