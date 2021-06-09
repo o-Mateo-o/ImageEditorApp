@@ -65,7 +65,7 @@ Available both transformation and its inversion evaluation.
 - `origin::Tuple{Number, Number}`: transition origin point as (y, x).
 - `mapMtrx`::Array{Float, 2}` transition matrix.
 - `translVector`::Array{Float, 1}` translation vector to move floating area by.
-- `rever`::Bool` information about straight or reversed echecking.
+- `rever`::Bool` information about straight or reversed checking.
 """
 function tRange(colorMatrix, ld, ru, origin, mapMtrx, translVector, rever=false)
     sizeOfM = size(colorMatrix)
@@ -135,8 +135,8 @@ function extendedInitialMatrix(extRngs, colorMatrix, mode)
 end
 
 """
-Calculate (by bilinear interpolation) the value for pixel which coordinates of origin are gived.
-Theese coordinates are not integer, so the calculation is unevitable.
+Calculate (by bilinear interpolation) the value for pixel which coordinates of origin are given.
+Theese coordinates are not integer, so the calculation is inevitable.
 
 # Arguments
 - `y`::Float` y coordinate of a point.
@@ -280,7 +280,7 @@ array of operations on image, each containing origin, parameters(described previ
 selectionTransform(initValues, (400, 300), (200, 700),
  [ ((300, 500), [('r', 100), ('s', (2, 1))], (20.4, -40)) ])
 
-Is one transformations on initValues matrices, selecion defined by LD = (400, 300), RU = (200, 700),
+??? Is one  of transformations on initValues matrices, selecion defined by LD = (400, 300), RU = (200, 700),
 origin point (300, 500). It is translated by (20.4, -40) and does a rotation by 100 degrees and 2,1 scaling.
 """
 function selectionTransform(initValues, ld, ru, transfList)

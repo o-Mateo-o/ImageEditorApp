@@ -62,7 +62,7 @@ end
 
 """
 Evaluate the color for the point of interpolated and scaled in y axis
-exctact of already x-scaled monochromatic matrix.
+extract of already x-scaled monochromatic matrix.
 
 # Arguments
 - `MatIx::Array{Float64, 2}`: extract of color matrix already interpolated by the x axis.
