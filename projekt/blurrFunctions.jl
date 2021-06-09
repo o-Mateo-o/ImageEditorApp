@@ -50,7 +50,7 @@ Copy every RGB matrix and reproduce extreme pixels.
 Create new matrix with values calculated by layingMask function and return list of new R, G, B matrices.
 
 #Arguments
-- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: R, G, B matrices tuple
+- `picture::Array{Array{Float64,2},1}`: r, g, b matrices list.
 - `typeofmask::Array{Float64,2}`: mask, determined by typeofmask function.
 """
 function converting(picture, typeofmask)
@@ -238,7 +238,7 @@ Create new matrix filled with values calculated by minimumValue function
 and return list of of new R G and B values. 
 
 #Arguments
-- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: R, G, B matrices tuple.
+- `picture::Array{Array{Float64,2},1}`: r, g, b matrices list.
 - `dimension::Int64`: length of side of a mask.
 """
 function mini(picture, dimension)
@@ -306,7 +306,7 @@ Then create new matrix with values calculated by maximumValue function
 and return list of new R G and B values. 
 
 #Arguments
-- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: R, G, B matrices tuple.
+- `picture::Array{Array{Float64,2},1}`: r, g, b matrices list.
 - `dimension::Int64`: length of a side of the mask.
 """
 function maxi(picture, dimension)
@@ -377,7 +377,7 @@ Then create new B matrix with values calculated by layingMask function
 and return list of R G and new B values.
 
 #Arguments
-- `picture::Tuple{Array{Float64,2},Array{Float64,2},Array{Float64,2}}`: R, G, B matrices tuple.
+- `picture::Array{Array{Float64,2},1}`: r, g, b matrices list.
 - `typeofmask::Array{Float64,2}`: mask which is a result of typeofmask function.
 """
 function whatIfJustBlue(picture, typeofmask)

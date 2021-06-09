@@ -1,12 +1,30 @@
-include("auxiliaryFunctions.jl")
+# colorFunctions.jl
+include("ManagePic.jl")
+using .ManagePic
 
+# auxiliary functions
 
+"""
+Get maximum, middle and minimum values of each color.
+
+# Arguments
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices list.
+"""
+function getValues(rgb)
+
+    r, g, b = rgb
+    Cmax = max.(r, g, b)
+    Cmin = min.(r, g, b)
+    sum = r .+ g .+ b
+    middleValue = sum .- Cmax .- Cmin
+    return [Cmax, middleValue, Cmin]
+end
 """
 Change contrast.
 
 # Arguments
-- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
-- `parameter::Float64`: in range [-100, 100], negative values create image with lower contrast
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices list.
+- `parameter::Float64`: in range [-100, 100], negative values create image with lower contrast.
 """
 function changeContrast(rgb, parameter::Float64)
     if parameter >= -100 && parameter <= 100
@@ -30,14 +48,14 @@ end
 Change lightness.
 
 # Arguments
-- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
-- `parameter::Float64`: in range [-100, 100]; negative value create image with lower lightness
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices list.
+- `parameter::Float64`: in range [-100, 100]; negative value create image with lower lightness.
 """
-function changeLightness(rgb, value) #wartosc [-100,100]
+function changeLightness(rgb, value) # wartosc [-100,100]
     if value <= 100 && value >= -100 && (typeof(value) == Float64 || typeof(value) == Int64)
-        point = value/100
+        point = value / 100
         if point > 0
-            r,g,b = rgb
+            r, g, b = rgb
             newR = (1 .- r) .* point .+ r
             newG = (1 .- g) .* point .+ g
             newB = (1 .- b) .* point .+ b
@@ -46,7 +64,7 @@ function changeLightness(rgb, value) #wartosc [-100,100]
             h, s, l = rgb2hsl1(rgb)
             newL = l .+ l .* point
             tryplet = h, s, newL
-            newR, newG,newB = hsl2rgb1(tryplet)
+            newR, newG, newB = hsl2rgb1(tryplet)
             return [newR, newG,newB]
         end
     else
@@ -58,12 +76,12 @@ end
 Change saturation.
 
 #Arguments
-- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
-- `parameter::Float64`: in range [-100, 100], negative value create image with lower saturation
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices list.
+- `parameter::Float64`: in range [-100, 100], negative value create image with lower saturation.
 """
 function changeSaturation(rgb, value)
     if value <= 100 && value >= -100 && (typeof(value) == Float64 || typeof(value) == Int64)
-        point = value/100
+        point = value / 100
         h, s, l = rgb2hsl1(rgb)
         if value >= 0
             complementS = 1 .- s
@@ -72,7 +90,7 @@ function changeSaturation(rgb, value)
             newS = s .+ s .* point
         end
         tryplet = h, newS, l
-        r,g,b = hsl2rgb1(tryplet)
+        r, g, b = hsl2rgb1(tryplet)
         return [r,g,b]
     else
         return ("Error")
@@ -90,7 +108,7 @@ end
 Count average value of each pixel.
 
 # Arguments
-- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices list.
 """
 function average(rgb) # as a average value of pixel
 
@@ -103,7 +121,7 @@ end
 Get Lightness from HSL and set as a grayscale.
 
 # Arguments
-- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices list.
 """
 function grayscaleLightness(rgb) # as HSL lightness
 
@@ -115,7 +133,7 @@ end
 Gets grayscale by using some ratio.
 
 # Arguments
-- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices list.
 """
 function grayscaleLuminosity(rgb) # calculated by ratio
 
@@ -128,7 +146,7 @@ end
 
 """
 Create a negative of a image.
-- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices tuple
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices list.
 """
 function negative(rgb)
     r, g, b = rgb

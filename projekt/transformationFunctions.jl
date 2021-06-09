@@ -217,8 +217,7 @@ end
 Check the validity of corner values given on input. Return true if correct.
 
 # Arguments
-- `initValues::Tuple{Array{Float64, 2}, Array{Float64, 2}, Array{Float64, 2}}`:
-   tuple (r, g, b) of initial color matrices.
+- `initValues::Array{Array{Float64,2},1}`: r, g, b matrices list.
 - `ld::Tuple{Integer, Integer}`: lower-left scaling area corner coordinates as (y, x). 
 - `ru::Tuple{Integer, Integer}`: upper-right scaling area corner coordinates as (y, x). 
 """
