@@ -270,8 +270,8 @@ array of operations on image, each containing origin, parameters(described previ
 selectionTransform(initValues, (400, 300), (200, 700),
  [ ((300, 500), [('r', 100), ('s', (2, 1))], (20.4, -40)) ])
 
-??? Is one  of transformations on initValues matrices, selecion defined by LD = (400, 300), RU = (200, 700),
-origin point (300, 500). It is translated by (20.4, -40) and does a rotation by 100 degrees and 2,1 scaling.
+Does the transformations on initValues matrices, where selecion is defined by LD = (400, 300), RU = (200, 700) 
+and the origin point is (300, 500). Image is translated by (20.4, -40), rotated by 100 degrees and scaled with ratios 2, 1.
 """
 function selectionTransform(initValues, ld, ru, transfList)
     if ! validity(initValues, ld, ru)
