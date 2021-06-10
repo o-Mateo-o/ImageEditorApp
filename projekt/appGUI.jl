@@ -199,13 +199,15 @@ function save_filesaveas(w)
         global saving_path = path_raw * ".jpg"
     else
         global saving_path = path_raw
-    end  
-    #savefile()
+    end
+    
+    ManagePic.savePictureRGB(saving_path, ManagePic.generateMatricesRGB(current_image))
+    println(saving_path)
     global save_flag = true
 end
 function save_filesave(w)
     if save_flag == true
-        #savefile()
+        ManagePic.savePictureRGB(saving_path, ManagePic.generateMatricesRGB(current_image))
     else
         save_filesaveas(w)
     end    
