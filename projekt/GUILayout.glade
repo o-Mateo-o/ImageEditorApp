@@ -266,7 +266,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton">
+                      <object class="GtkButton" id="b_negative">
                         <property name="label" translatable="yes">Negative</property>
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>

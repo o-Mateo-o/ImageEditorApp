@@ -72,9 +72,12 @@ b_brctr = bld["b_brctr"]
 b_hsl = bld["b_hsl"]
 b_rgb = bld["b_rgb"]
 b_gray = bld["b_gray"]
+b_negative = bld["b_negative"]
 b_blur = bld["b_blur"]
 b_sharp = bld["b_sharp"]
 b_transit = bld["b_transit"]
+b_xmirr = bld["b_xmirr"]
+b_ymirr = bld["b_ymirr"]
 
 scale_left = bld["scale_left"]
 scale_right = bld["scale_right"]
@@ -560,6 +563,12 @@ function call_gray(w)
     hide(grayW)  
 end
 
+function call_negative(w)
+    rgb = ManagePic.generateMatricesRGB(current_image)
+    rgb = colorFunctions.negative(rgb)
+    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+end
+
 
     
 
@@ -601,6 +610,7 @@ signal_connect(gray_update, gray_br, "toggled")
 signal_connect(gray_update, gray_rgb, "toggled")
 signal_connect(call_gray, b_gray_ok, "clicked")
 
+signal_connect(call_negative, b_negative, "clicked")
 
 signal_connect(blur_open, b_blur, "clicked")
 signal_connect(blur_close, b_blur_cancel, "clicked")
