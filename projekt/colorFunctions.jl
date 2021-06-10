@@ -82,7 +82,7 @@ Change saturation.
 function changeSaturation(rgb, value)
     if value <= 100 && value >= -100 && (typeof(value) == Float64 || typeof(value) == Int64)
         point = value / 100
-        h, s, l = rgb2hsl1(rgb)
+        h, s, l = rgb2hsl(rgb)
         if value >= 0
             complementS = 1 .- s
             newS = complementS .* point .+ s
