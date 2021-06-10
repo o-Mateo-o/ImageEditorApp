@@ -26,7 +26,7 @@ Change contrast.
 - `rgb::Array{Array{Float64,2},1}`: r, g, b matrices list.
 - `parameter::Float64`: in range [-100, 100], negative values create image with lower contrast.
 """
-function changeContrast(rgb, parameter::Float64)
+function changeContrast(rgb, parameter)
     if parameter >= -100 && parameter <= 100
         factor = (102 * (parameter + 100)) ./ (100 * (102 - parameter))
         r, g, b = rgb   
@@ -61,10 +61,10 @@ function changeLightness(rgb, value) # wartosc [-100,100]
             newB = (1 .- b) .* point .+ b
             return [newR, newG,newB]
         else
-            h, s, l = rgb2hsl1(rgb)
+            h, s, l = rgb2hsl(rgb)
             newL = l .+ l .* point
             tryplet = h, s, newL
-            newR, newG, newB = hsl2rgb1(tryplet)
+            newR, newG, newB = hsl2rgb(tryplet)
             return [newR, newG,newB]
         end
     else
@@ -90,7 +90,7 @@ function changeSaturation(rgb, value)
             newS = s .+ s .* point
         end
         tryplet = h, newS, l
-        r, g, b = hsl2rgb1(tryplet)
+        r, g, b = hsl2rgb(tryplet)
         return [r,g,b]
     else
         return ("Error")
