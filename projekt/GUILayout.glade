@@ -850,8 +850,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+              <object class="GtkButton" id="b_blur_ok">
+                <property name="label" translatable="yes">Process</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
@@ -914,8 +914,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+              <object class="GtkButton" id="b_brctr_ok">
+                <property name="label" translatable="yes">Process</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
@@ -1205,8 +1205,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+              <object class="GtkButton" id="b_gray_ok">
+                <property name="label" translatable="yes">Process</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
@@ -1438,8 +1438,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+              <object class="GtkButton" id="b_rgb_ok">
+                <property name="label" translatable="yes">Process</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
@@ -1457,6 +1457,12 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAdjustment" id="a_rotat_angle">
+    <property name="lower">-360</property>
+    <property name="upper">360</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="a_satur">
     <property name="lower">-100</property>
@@ -1508,8 +1514,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+              <object class="GtkButton" id="b_hsl_ok">
+                <property name="label" translatable="yes">Process</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
@@ -1620,6 +1626,20 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAdjustment" id="a_scale_ratio_x">
+    <property name="lower">-20</property>
+    <property name="upper">20</property>
+    <property name="value">1</property>
+    <property name="step-increment">0.5</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="a_scale_ratio_y">
+    <property name="lower">-20</property>
+    <property name="upper">20</property>
+    <property name="value">1</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
   </object>
   <object class="GtkAdjustment" id="a_sharp_intens">
     <property name="upper">30</property>
@@ -1826,8 +1846,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+              <object class="GtkButton" id="b_sharp_ok">
+                <property name="label" translatable="yes">Process</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
@@ -1846,20 +1866,17 @@
       </object>
     </child>
   </object>
-  <object class="GtkListStore" id="liststore1">
-    <columns>
-      <!-- column-name < określenie nowej kolumny >1 -->
-      <column type="&lt; określenie nowej kolumny &gt;"/>
-      <!-- column-name < określenie nowej kolumny >2 -->
-      <column type="&lt; określenie nowej kolumny &gt;"/>
-      <!-- column-name < określenie nowej kolumny >3 -->
-      <column type="&lt; określenie nowej kolumny &gt;"/>
-    </columns>
-    <data>
-      <row/>
-      <row/>
-      <row/>
-    </data>
+  <object class="GtkAdjustment" id="a_transl_vect_x">
+    <property name="lower">-2000</property>
+    <property name="upper">2000</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="a_transl_vect_y">
+    <property name="lower">-2000</property>
+    <property name="upper">2000</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
   </object>
   <object class="GtkApplicationWindow" id="transitW">
     <property name="width-request">400</property>
@@ -1896,8 +1913,9 @@
             <property name="vexpand">True</property>
             <property name="column-spacing">70</property>
             <child>
-              <object class="GtkButton" id="b_sharp_cancel1">
+              <object class="GtkButton" id="b_transit_cancel">
                 <property name="label">Cancel</property>
+                <property name="name">b_transit_cancel</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
@@ -1908,8 +1926,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+              <object class="GtkButton" id="b_transit_ok">
+                <property name="label" translatable="yes">Process</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
@@ -1938,7 +1956,8 @@
             <property name="row-spacing">20</property>
             <property name="column-spacing">10</property>
             <child>
-              <object class="GtkListBox">
+              <object class="GtkListBox" id="list_transit">
+                <property name="name">transit_list</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="hexpand">True</property>
@@ -1949,7 +1968,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkListBox">
+              <object class="GtkListBox" id="list_minus">
+                <property name="name">minus_list</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="hexpand">True</property>
@@ -1989,7 +2009,7 @@
           </packing>
         </child>
         <child>
-          <!-- n-columns=5 n-rows=6 -->
+          <!-- n-columns=4 n-rows=7 -->
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
@@ -2043,6 +2063,8 @@
                   <object class="GtkSpinButton">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="adjustment">a_transl_vect_x</property>
+                    <property name="digits">2</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -2076,6 +2098,8 @@
                   <object class="GtkSpinButton">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="adjustment">a_transl_vect_y</property>
+                    <property name="digits">2</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -2111,6 +2135,8 @@
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
+                    <property name="adjustment">a_rotat_angle</property>
+                    <property name="digits">2</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -2145,6 +2171,8 @@
                   <object class="GtkSpinButton">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="adjustment">a_scale_ratio_x</property>
+                    <property name="digits">2</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -2178,6 +2206,8 @@
                   <object class="GtkSpinButton">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="adjustment">a_scale_ratio_y</property>
+                    <property name="digits">2</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -2202,37 +2232,25 @@
               </packing>
             </child>
             <child>
-              <!-- n-columns=1 n-rows=2 -->
-              <object class="GtkGrid">
+              <object class="GtkButton" id="b_add_transl">
+                <property name="label" translatable="yes">+</property>
+                <property name="name">b_add_translate</property>
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="row-spacing">8</property>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Vector - y</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkComboBoxText">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <items>
-                      <item translatable="yes">a</item>
-                      <item translatable="yes">v</item>
-                      <item translatable="yes">s</item>
-                    </items>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="left-attach">3</property>
+                <property name="top-attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="b_add_rotat">
+                <property name="label" translatable="yes">+</property>
+                <property name="name">b_add_rotate</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
               </object>
               <packing>
                 <property name="left-attach">3</property>
@@ -2240,68 +2258,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="b_add_scale">
                 <property name="label" translatable="yes">+</property>
+                <property name="name">b_add_scale</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-              </object>
-              <packing>
-                <property name="left-attach">4</property>
-                <property name="top-attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">+</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-              </object>
-              <packing>
-                <property name="left-attach">4</property>
-                <property name="top-attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">+</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-              </object>
-              <packing>
-                <property name="left-attach">4</property>
-                <property name="top-attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <!-- n-columns=1 n-rows=2 -->
-              <object class="GtkGrid">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="row-spacing">8</property>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Vector - y</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkComboBox">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
               </object>
               <packing>
                 <property name="left-attach">3</property>
@@ -2316,7 +2278,7 @@
               <packing>
                 <property name="left-attach">0</property>
                 <property name="top-attach">1</property>
-                <property name="width">5</property>
+                <property name="width">4</property>
               </packing>
             </child>
             <child>
@@ -2327,7 +2289,7 @@
               <packing>
                 <property name="left-attach">0</property>
                 <property name="top-attach">3</property>
-                <property name="width">5</property>
+                <property name="width">4</property>
               </packing>
             </child>
             <child>
@@ -2338,11 +2300,61 @@
               <packing>
                 <property name="left-attach">0</property>
                 <property name="top-attach">5</property>
-                <property name="width">5</property>
+                <property name="width">4</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <!-- n-columns=1 n-rows=2 -->
+              <object class="GtkGrid">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">12</property>
+                    <property name="label" translatable="yes">Origin point (for scaling and rotation):</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="combo_origin">
+                    <property name="name">combo_origin</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-start">30</property>
+                    <property name="margin-end">30</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">20</property>
+                    <property name="hexpand">True</property>
+                    <property name="active-id">origin_c</property>
+                    <items>
+                      <item id="origin_c">Center</item>
+                      <item id="origin_l" translatable="yes">Left-center</item>
+                      <item id="origin_r" translatable="yes">Right-center</item>
+                      <item id="origin_u" translatable="yes">Upper-center</item>
+                      <item id="origin_d" translatable="yes">Lower-center</item>
+                      <item id="origin_ru" translatable="yes">Upper-right corner</item>
+                      <item id="origin_rd" translatable="yes">Lower-right corner</item>
+                      <item id="origin_lu" translatable="yes">Upper-left corner</item>
+                      <item id="origin_ld" translatable="yes">Lower-left corner</item>
+                    </items>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">6</property>
+                <property name="width">4</property>
+              </packing>
             </child>
           </object>
           <packing>

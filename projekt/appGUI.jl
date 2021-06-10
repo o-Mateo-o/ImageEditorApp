@@ -1,5 +1,5 @@
 include("ManagePic.jl")
-using .ManagePic
+
 using Gtk, Images, ImageView
 
 #po otworzeniu pliku jak ktoś zamknie otwieracz to error wypala
@@ -12,7 +12,7 @@ bld = GtkBuilder(filename="projekt/GUILayout.glade")
 saving_path = ""
 save_flag = false
 undo_counter = -1
-image_dict = Nothing
+
 
 current_image = Array{RGB{Normed{UInt8,8}},2}
 current_image_u = Array{RGB{Normed{UInt8,8}},2}
@@ -23,9 +23,8 @@ function new_current_image(new_image, canvas)
     global current_image = new_image
     global undo_counter += 1
 
-    d = imshow(canvas, new_image)
-    #imfill()
-    global image_dict = d
+    imshow(canvas, new_image)
+
 
 end
 function undo_image(canvas)
@@ -89,12 +88,14 @@ brctrW = bld["brctrW"]
 b_brctr_cancel = bld["b_brctr_cancel"]
 a_brightness = bld["a_brightness"]
 a_contrast = bld["a_contrast"]
+b_brctr_ok = bld["b_brctr_ok"]
 #hue satur light window
 hslW = bld["hslW"]
 b_hsl_cancel = bld["b_hsl_cancel"]
 a_hue = bld["a_hue"]
 a_satur = bld["a_satur"]
 a_light = bld["a_light"]
+b_hsl_ok = bld["b_hsl_ok"]
 #rgb components
 rgbW = bld["rgbW"]
 b_rgb_cancel = bld["b_rgb_cancel"]
@@ -104,9 +105,11 @@ rgb_sb = bld["rgb_sb"]
 rgb_hr = bld["rgb_hr"]
 rgb_hg = bld["rgb_hg"]
 rgb_hb = bld["rgb_hb"]
+b_rgb_ok = bld["b_rgb_ok"]
 #grayscale
 grayW = bld["grayW"]
 b_gray_cancel = bld["b_gray_cancel"]
+b_gray_ok = bld["b_gray_ok"]
 #blur 
 blurW = bld["blurW"]
 b_blur_cancel = bld["b_blur_cancel"]
@@ -115,6 +118,7 @@ a_blur_intens_s = bld["a_blur_intens_s"]
 blur_mask_aver = bld["blur_mask_aver"]
 blur_mask_circ = bld["blur_mask_circ"]
 blur_mask_lp3 = bld["blur_mask_lp3"]
+b_blur_ok = bld["b_blur_ok"]
 #sharp 
 sharpW = bld["sharpW"]
 b_sharp_cancel = bld["b_sharp_cancel"]
@@ -123,7 +127,20 @@ a_sharp_intens_s = bld["a_sharp_intens_s"]
 sharp_mask_mean = bld["sharp_mask_mean"]
 sharp_mask_hp1 = bld["sharp_mask_hp1"]
 sharp_mask_hp2 = bld["sharp_mask_hp2"]
+b_sharp_ok = bld["b_sharp_ok"]
 #transform
+transitW = bld["transitW"]
+a_transl_vect_x = bld["a_transl_vect_x"]
+a_transl_vect_y = bld["a_transl_vect_y"]
+a_rotat_angle = bld["a_rotat_angle"]
+a_scale_ratio_x = bld["a_scale_ratio_x"]
+a_scale_ratio_y = bld["a_scale_ratio_y"]
+b_add_transl = bld["b_add_transl"]
+b_add_rotat = bld["b_add_rotat"]
+b_add_scale = bld["b_add_scale"]
+combo_origin = bld["combo_origin"]
+b_transit_cancel = bld["b_transit_cancel"]
+b_transit_ok = bld["b_transit_ok"]
 
 
 """
@@ -224,21 +241,6 @@ function sharp_update(w)
     end
 end
 
-function range_open(w)
-    global range_left_val = get_gtk_property(a_range_left, :value, Int)
-    global range_right_val = get_gtk_property(a_range_right, :value, Int)
-    global range_up_val = get_gtk_property(a_range_up, :value, Int)
-    global range_down_val = get_gtk_property(a_range_down, :value, Int)
-    show_selection(current_image, range_left_val, range_right_val, range_up_val, range_down_val)
-    show(scale_left)
-    show(scale_right)
-    show(scale_down)
-    show(scale_up)
-    show(b_range_cancel)
-    show(b_range_ok)
-end
-
-
 function show_selection(image, range_left, range_right, range_up, range_down)   
     
     r = (Float64.(red.(image)))
@@ -262,13 +264,35 @@ function show_selection(image, range_left, range_right, range_up, range_down)
     
     global selection_ru = ru
     global selection_ld = ld
-    selection_image = matriceRGB(color_matrices...)
+    
+    selection_image = ManagePic.matriceRGB(color_matrices...)
+    println("AAA")
     imshow(cnv, selection_image)
 end #RGB
 
-function range_accept(w)
+function range_open(w)
+    
+    global range_left_val = get_gtk_property(a_range_left, :value, Int)
+    global range_right_val = get_gtk_property(a_range_right, :value, Int)
+    global range_up_val = get_gtk_property(a_range_up, :value, Int)
+    global range_down_val = get_gtk_property(a_range_down, :value, Int)
+    show_selection(current_image, range_left_val, range_right_val, range_up_val, range_down_val)
 
+    show(scale_left)
+    show(scale_right)
+    show(scale_down)
+    show(scale_up)
+    show(b_range_cancel)
+    show(b_range_ok)
 end
+
+
+
+
+function range_accept(w)
+    show(transitW)
+end
+
 function range_close(w)
     hide(scale_left)
     hide(scale_right)
@@ -308,6 +332,11 @@ function update_range_down(w)
     end
     show_selection(current_image, range_left_val, range_right_val, range_up_val, range_down_val)
 end
+
+function transit_open(w)
+    show(transitW)    
+end
+transit_close(w) = hide(transitW)
     
 
 
@@ -357,6 +386,8 @@ signal_connect(update_range_left, a_range_left, "value-changed")
 signal_connect(update_range_right, a_range_right, "value-changed")
 signal_connect(update_range_up, a_range_up, "value-changed")
 signal_connect(update_range_down, a_range_down, "value-changed")
+signal_connect(transit_open, b_range_ok, "clicked")
+signal_connect(transit_close, b_transit_cancel, "clicked")
 
 
 #function f1(w, var)
