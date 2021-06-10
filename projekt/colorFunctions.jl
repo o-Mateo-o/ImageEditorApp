@@ -46,6 +46,29 @@ function changeContrast(rgb, parameter)
 end
 
 """
+Change brightness.
+
+# Arguments
+- `rgb::Array{Array{Float64,2},1}`: r, g, b matrices list.
+- `parameter::Float64`: in range [-100, 100]; negative value create image with lower brightness.
+"""
+function changeBrightness(rgb, value) # wartosc [-100,100]
+    if value <= 100 && value >= -100 && (typeof(value) == Float64 || typeof(value) == Int64)
+        point = value / 100
+
+        r, g, b = rgb
+        newR = min.(max.((1 .- r) .* point .+ r, 0), 1)
+        newG =  min.(max.((1 .- g) .* point .+ g, 0), 1)
+        newB = min.(max.((1 .- b) .* point .+ b, 0), 1)
+            
+            return [newR, newG,newB]
+    else
+        return ("Error")
+    end
+end    
+
+
+"""
 Change lightness.
 
 # Arguments
@@ -55,21 +78,13 @@ Change lightness.
 function changeLightness(rgb, value) # wartosc [-100,100]
     if value <= 100 && value >= -100 && (typeof(value) == Float64 || typeof(value) == Int64)
         point = value / 100
-        if point > 0
-            r, g, b = rgb
-            newR = (1 .- r) .* point .+ r
-            newG = (1 .- g) .* point .+ g
-            newB = (1 .- b) .* point .+ b
-            return [newR, newG,newB]
-        else
-            println("SZANGO")
-            h, s, l = rgb2hsl(rgb)
-            println("MANGO")
-            newL = l .+ l .* point
-            tryplet = h, s, newL
-            newR, newG, newB = hsl2rgb(tryplet)
-            return [newR, newG,newB]
-        end
+
+        h, s, l = rgb2hsl(rgb)
+        newL = l .+ l .* point
+        tryplet = h, s, newL
+        newR, newG, newB = hsl2rgb(tryplet)
+        return [newR, newG,newB]
+
     else
         return ("Error")
     end
