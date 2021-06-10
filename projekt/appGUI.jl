@@ -41,7 +41,6 @@ function undo_image(canvas)
     else
         println("ERROR - cant undo")                                #ogarnąć
     end
-    println(undo_counter)
 end
 
 rgb_choice = ""
@@ -181,7 +180,6 @@ print(a)
 function open_fileopen(w)
     path = open_dialog("Pick an image file", GtkNullContainer(), (GtkFileFilter("*.jpg", name="All supported formats"), "*.jpg"))
     img = load(path)
-    print(typeof(img))
     new_current_image(img, cnv)
 end
 function save_filesaveas(w)
@@ -195,7 +193,6 @@ function save_filesaveas(w)
     global save_flag = true
 end
 function save_filesave(w)
-    print(save_flag)
     if save_flag == true
         #savefile()
     else
@@ -226,6 +223,7 @@ hsl_close(w) = hide(hslW)
 
 
 function rgb_open(w)
+    global rgb_choice = rgb_sr
     show(rgbW)
 end
 rgb_close(w) = hide(rgbW)
@@ -292,7 +290,6 @@ function show_selection(image, range_left, range_right, range_up, range_down)
     global selection_ld = ld
     
     selection_image = ManagePic.matriceRGB(color_matrices...)
-    println("AAA")
     imshow(cnv, selection_image)
 end #RGB
 
@@ -401,7 +398,6 @@ function transl_add(w)
         end
     end
     draw_transit_list()
-    println(transits_counter)
 end
 
 
@@ -416,7 +412,6 @@ function rotat_add(w)
         end
     end
     draw_transit_list()
-    println(transits_counter)
 end
 
 function scale_add(w)
@@ -431,42 +426,34 @@ function scale_add(w)
         end
     end
     draw_transit_list()
-    println(transits_counter)
 end
 
 function transit_del_elem_1(w)
     global transits_counter -= 1
-    println(transits_counter)
     hide(transit_list_reg[1][1])
     splice!(transit_given_reg, 1)
     draw_transit_list()
-    # for i in 1:5
-    #     println(g)
 end
 function transit_del_elem_2(w)
     global transits_counter -= 1
-    println(transits_counter)
     hide(transit_list_reg[2][1])
     splice!(transit_given_reg, 2)
     draw_transit_list()
 end
 function transit_del_elem_3(w)
     global transits_counter -= 1
-    println(transits_counter)
     hide(transit_list_reg[3][1])
     splice!(transit_given_reg, 3)  
     draw_transit_list() 
 end
 function transit_del_elem_4(w)
     global transits_counter -= 1
-    println(transits_counter)
     hide(transit_list_reg[4][1])
     splice!(transit_given_reg, 4)    
     draw_transit_list()
 end
 function transit_del_elem_5(w)
     global transits_counter -= 1
-    println(transits_counter)
     hide(transit_list_reg[5][1])
     splice!(transit_given_reg, 5)     
     draw_transit_list()
@@ -490,14 +477,57 @@ function call_brctr(w)
     contrast_fact = get_gtk_property(a_contrast, :value, Float64)
 
     if brightness_fact != 0
-        rgb = colorFunctions.changeLightness(rgb, brightness_fact)
+        rgb = colorFunctions.changeBrightness(rgb, brightness_fact)
     end
     if contrast_fact != 0
         rgb = colorFunctions.changeContrast(rgb, contrast_fact)
     end
 
-    new_current_image(ManagePic.matriceRGB(rgb...), cnv)     
+    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    hide(brctrW)  
 end
+
+function call_hsl(w)
+    rgb = ManagePic.generateMatricesRGB(current_image)
+    hue_fact = get_gtk_property(a_hue, :value, Float64)
+    satur_fact = get_gtk_property(a_satur, :value, Float64)
+    light_fact =  get_gtk_property(a_light, :value, Float64)
+    if hue_fact < 0
+        hue_fact += 360
+    end
+    if hue_fact != 0
+        rgb = colorFunctions.changeColors(rgb, hue_fact)
+    end
+    if satur_fact != 0
+        rgb = colorFunctions.changeSaturation(rgb, satur_fact)
+    end
+    if light_fact != 0
+        rgb = colorFunctions.changeLightness(rgb, light_fact)
+    end
+    
+    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    hide(hslW)  
+end
+
+function call_rgb(w)
+    rgb = ManagePic.generateMatricesRGB(current_image)
+    if rgb_choice == rgb_sr
+        rgb = colorFunctions.onlyRed(rgb)
+    elseif rgb_choice == rgb_sg
+        rgb = colorFunctions.onlyGreen(rgb)
+    elseif rgb_choice == rgb_sb
+        rgb = colorFunctions.onlyBlue(rgb)
+    elseif rgb_choice == rgb_hr
+        rgb = colorFunctions.withoutRed(rgb)
+    elseif rgb_choice == rgb_hg
+        rgb = colorFunctions.withoutGreen(rgb)
+    elseif rgb_choice == rgb_hb
+        rgb = colorFunctions.withoutBlue(rgb)
+    end
+    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    hide(rgbW)  
+end
+
 
     
 
@@ -516,6 +546,7 @@ signal_connect(call_brctr, b_brctr_ok, "clicked")
 
 signal_connect(hsl_open, b_hsl, "clicked")
 signal_connect(hsl_close, b_hsl_cancel, "clicked")
+signal_connect(call_hsl, b_hsl_ok, "clicked")
 
 signal_connect(rgb_open, b_rgb, "clicked")
 signal_connect(rgb_close, b_rgb_cancel, "clicked")
@@ -525,6 +556,7 @@ signal_connect(rgb_update, rgb_sb, "toggled")
 signal_connect(rgb_update, rgb_hr, "toggled")
 signal_connect(rgb_update, rgb_hg, "toggled")
 signal_connect(rgb_update, rgb_hb, "toggled")
+signal_connect(call_rgb, b_rgb_ok, "clicked")
 
 signal_connect(gray_open, b_gray, "clicked")
 signal_connect(gray_close, b_gray_cancel, "clicked")
@@ -564,22 +596,6 @@ signal_connect(transit_del_elem_5, transit_list_reg[5][3], "clicked")
 signal_connect(transit_limit_dialog_close, b_transit_limit_cancel, "clicked")
 
 
-#function f1(w, var)
-#    global var = get_gtk_property(w, :active, Bool)
-#    println("A", red_sr, "B", red_hr)
-#end
-#function f2(w)
-#    global red_hr = get_gtk_property(w, :active, Bool)
-#    println("A", red_sr, "B", red_hr)
-#end
-#red_sr = ""
-#red_sg = ""
-#red_sb = ""
-#red_hr = ""
-#red_hg = ""
-#red_hb = ""
-#signal_connect(f1, rgb_sr, "toggled", red_sr)
-#signal_connect(f1, rgb_hr, "toggled", red_hr)
 
 
 showall(mainW)

@@ -55,12 +55,10 @@ Change brightness.
 function changeBrightness(rgb, value) # wartosc [-100,100]
     if value <= 100 && value >= -100 && (typeof(value) == Float64 || typeof(value) == Int64)
         point = value / 100
-
         r, g, b = rgb
-        newR = min.(max.((1 .- r) .* point .+ r, 0), 1)
-        newG =  min.(max.((1 .- g) .* point .+ g, 0), 1)
-        newB = min.(max.((1 .- b) .* point .+ b, 0), 1)
-            
+        newR = min.(max.(0.5* point .+ r, 0), 1)
+        newG =  min.(max.(0.5* point .+ g, 0), 1)
+        newB = min.(max.(0.5*point .+ b, 0), 1)
             return [newR, newG,newB]
     else
         return ("Error")
