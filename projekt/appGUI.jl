@@ -44,6 +44,7 @@ function undo_image(canvas)
 end
 
 rgb_choice = ""
+gray_choice = ""
 blur_choice = ""
 sharp_choice = ""
 range_right_val = 0
@@ -113,6 +114,13 @@ b_rgb_ok = bld["b_rgb_ok"]
 #grayscale
 grayW = bld["grayW"]
 b_gray_cancel = bld["b_gray_cancel"]
+gray_r = bld["gray_r"]
+gray_g = bld["gray_g"]
+gray_b = bld["gray_b"]
+gray_rg = bld["gray_rg"]
+gray_gb = bld["gray_gb"]
+gray_br = bld["gray_br"]
+gray_rgb = bld["gray_rgb"]
 b_gray_ok = bld["b_gray_ok"]
 #blur 
 blurW = bld["blurW"]
@@ -221,9 +229,7 @@ function hsl_open(w)
 end
 hsl_close(w) = hide(hslW)
 
-
 function rgb_open(w)
-    global rgb_choice = rgb_sr
     show(rgbW)
 end
 rgb_close(w) = hide(rgbW)
@@ -236,6 +242,11 @@ end
 
 function gray_open(w)
     show(grayW)
+end
+function gray_update(w)
+    if get_gtk_property(w, :active, Bool)
+        global gray_choice = w
+    end
 end
 gray_close(w) = hide(grayW)
 
@@ -528,6 +539,27 @@ function call_rgb(w)
     hide(rgbW)  
 end
 
+function call_gray(w)
+    rgb = ManagePic.generateMatricesRGB(current_image)
+    if gray_choice == gray_r
+        rgb = colorFunctions.redAsAGrayscale(rgb)
+    elseif gray_choice == gray_g
+        rgb = colorFunctions.greenAsAGrayscale(rgb)
+    elseif gray_choice == gray_b
+        rgb = colorFunctions.blueAsAGrayscale(rgb)
+    elseif gray_choice == gray_rg
+        rgb = colorFunctions.onlyBlueAndGrayscale(rgb)
+    elseif gray_choice == gray_gb
+        rgb = colorFunctions.onlyRedAndGrayscale(rgb)
+    elseif gray_choice == gray_br
+        rgb = colorFunctions.withoutGreen(rgb)
+    elseif gray_choice == gray_rgb
+        rgb = colorFunctions.grayscaleLuminosity(rgb)
+    end
+    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    hide(grayW)  
+end
+
 
     
 
@@ -560,6 +592,15 @@ signal_connect(call_rgb, b_rgb_ok, "clicked")
 
 signal_connect(gray_open, b_gray, "clicked")
 signal_connect(gray_close, b_gray_cancel, "clicked")
+signal_connect(gray_update, gray_r, "toggled")
+signal_connect(gray_update, gray_g, "toggled")
+signal_connect(gray_update, gray_b, "toggled")
+signal_connect(gray_update, gray_rg, "toggled")
+signal_connect(gray_update, gray_gb, "toggled")
+signal_connect(gray_update, gray_br, "toggled")
+signal_connect(gray_update, gray_rgb, "toggled")
+signal_connect(call_gray, b_gray_ok, "clicked")
+
 
 signal_connect(blur_open, b_blur, "clicked")
 signal_connect(blur_close, b_blur_cancel, "clicked")
@@ -597,7 +638,8 @@ signal_connect(transit_limit_dialog_close, b_transit_limit_cancel, "clicked")
 
 
 
-
+global rgb_choice = rgb_sr
+global gray_choice = gray_rgb
 showall(mainW)
 hide(scale_left)
 hide(scale_right)
