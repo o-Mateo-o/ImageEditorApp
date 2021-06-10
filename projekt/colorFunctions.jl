@@ -231,13 +231,13 @@ end
 function onlyGreenAndGrayscale(rgb)
     red, green, blue = rgb
     average = (red .+ green .+ blue) ./ 3
-    return [red, average, average]
+    return [average, green, average]
 end
 
 function onlyBlueAndGrayscale(rgb)
     red, green, blue = rgb
     average = (red .+ green .+ blue) ./ 3
-    return [red, average, average]
+    return [average, average, blue]
 end
 
 # Double rainbow? what is tHAT? :o
