@@ -61,8 +61,7 @@ Available both transformation and its inversion evaluation.
 function tRange(colorMatrix, ld, ru, origin, mapMtrx, translVector, rever=false)
     sizeOfM = size(colorMatrix)
     crnrs = tupleToVector.([ld, ru, (ld[1], ru[2]), (ru[1], ld[2])])
-    crnrsMapped = [mappedCoords(corner[1] - translVector[1] * (rever), corner[2] - translVector[2] * (rever), origin, mapMtrx) 
-    .+ translVector .* (!rever) for corner in crnrs]
+    crnrsMapped = [mappedCoords(corner[1] - translVector[1] * (rever), corner[2] - translVector[2] * (rever), origin, mapMtrx) .+ translVector .* (!rever) for corner in crnrs]
     choiceY = [corner[1] for corner in crnrsMapped]
     choiceX = [corner[2] for corner in crnrsMapped]
 
