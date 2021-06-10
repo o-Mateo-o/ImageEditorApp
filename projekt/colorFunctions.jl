@@ -1,8 +1,7 @@
+module colorFunctions 
 # colorFunctions.jl
 include("ManagePic.jl")
 using .ManagePic
-
-module colorFunctions 
 
 # auxiliary functions
 
@@ -63,7 +62,9 @@ function changeLightness(rgb, value) # wartosc [-100,100]
             newB = (1 .- b) .* point .+ b
             return [newR, newG,newB]
         else
+            println("SZANGO")
             h, s, l = rgb2hsl(rgb)
+            println("MANGO")
             newL = l .+ l .* point
             tryplet = h, s, newL
             newR, newG, newB = hsl2rgb(tryplet)

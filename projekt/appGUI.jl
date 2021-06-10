@@ -1,5 +1,7 @@
-using Base: Integer
-include("ManagePic.jl")
+include("blurrFunctions.jl")
+include("colorFunctions.jl")
+include("transformationFunctions.jl")
+#include("ManagePic.jl")
 
 using Gtk, Images, ImageView
 
@@ -179,6 +181,7 @@ print(a)
 function open_fileopen(w)
     path = open_dialog("Pick an image file", GtkNullContainer(), (GtkFileFilter("*.jpg", name="All supported formats"), "*.jpg"))
     img = load(path)
+    print(typeof(img))
     new_current_image(img, cnv)
 end
 function save_filesaveas(w)
@@ -270,17 +273,13 @@ end
 
 function show_selection(image, range_left, range_right, range_up, range_down)   
     
-    r = (Float64.(red.(image)))
-    g = (Float64.(green.(image)))
-    b = (Float64.(blue.(image)))
-
-    img_height = size(r)[1]
-    img_width = size(r)[2]
-
+    color_matrices = ManagePic.generateMatricesRGB(image)
+    
+    img_height = size(color_matrices[1])[1]
+    img_width = size(color_matrices[1])[2]
     ru = (max(Int(floor(range_up*img_height/100)),1), max(Int(floor((100-range_right)*img_width/100)),1))
     ld = (max(Int(floor((100-range_down)*img_height/100)),1), max(Int(floor(range_left*img_width/100)),1))
-    
-    color_matrices = [r, g, b]
+
 
     for i in 1:3
         original_matrix = copy(color_matrices[i])
@@ -477,10 +476,29 @@ end
 
 
 
+
 function transit_limit_dialog_open(w)
     show(transitLimitW)    
 end
 transit_limit_dialog_close(w) = hide(transitLimitW)
+
+
+# backend functions calls
+function call_brctr(w)
+    rgb = ManagePic.generateMatricesRGB(current_image)
+    brightness_fact = get_gtk_property(a_brightness, :value, Float64)
+    contrast_fact = get_gtk_property(a_contrast, :value, Float64)
+
+    if brightness_fact != 0
+        rgb = colorFunctions.changeLightness(rgb, brightness_fact)
+    end
+    if contrast_fact != 0
+        rgb = colorFunctions.changeContrast(rgb, contrast_fact)
+    end
+
+    new_current_image(ManagePic.matriceRGB(rgb...), cnv)     
+end
+
     
 
 
@@ -494,6 +512,7 @@ signal_connect(undo_clb, b_undo, "activate")
 
 signal_connect(brctr_open, b_brctr, "clicked")
 signal_connect(brctr_close, b_brctr_cancel, "clicked")
+signal_connect(call_brctr, b_brctr_ok, "clicked")
 
 signal_connect(hsl_open, b_hsl, "clicked")
 signal_connect(hsl_close, b_hsl_cancel, "clicked")
