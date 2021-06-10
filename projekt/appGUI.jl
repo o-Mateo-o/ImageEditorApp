@@ -1,15 +1,12 @@
+module RomeoGUI
 include("blurrFunctions.jl")
 include("colorFunctions.jl")
 include("transformationFunctions.jl")
-#include("ManagePic.jl")
 
 using Gtk, Images, ImageView
 
-#po otworzeniu pliku jak ktoś zamknie otwieracz to error wypala
 
-
-
-
+# GLOBAL VARIABLES AND GENERAL FUNCTIONS
 
 bld = GtkBuilder(filename="projekt/GUILayout.glade")
 saving_path = ""
@@ -39,7 +36,7 @@ function undo_image(canvas)
         global undo_counter -= 1
         imshow(canvas, current_image)
     else
-        println("ERROR - cant undo")                                #ogarnąć
+        println("ERROR - cant undo")
     end
 end
 
@@ -56,7 +53,7 @@ selection_ld = (Nothing, Nothing)
 
 # ELEMENTS BUILDING
 
-#main window
+# main window
 mainW = bld["mainW"]
 frame, cnv = ImageView.frame_canvas(:auto)
 image_grid = bld["image_grid"]
@@ -91,20 +88,20 @@ a_range_right = bld["a_range_right"]
 b_range_ok = bld["b_range_ok"]
 b_range_cancel = bld["b_range_cancel"]
 
-#brightness and conterast window
+# brightness and conterast window
 brctrW = bld["brctrW"]
 b_brctr_cancel = bld["b_brctr_cancel"]
 a_brightness = bld["a_brightness"]
 a_contrast = bld["a_contrast"]
 b_brctr_ok = bld["b_brctr_ok"]
-#hue satur light window
+# hue satur light window
 hslW = bld["hslW"]
 b_hsl_cancel = bld["b_hsl_cancel"]
 a_hue = bld["a_hue"]
 a_satur = bld["a_satur"]
 a_light = bld["a_light"]
 b_hsl_ok = bld["b_hsl_ok"]
-#rgb components
+# rgb components
 rgbW = bld["rgbW"]
 b_rgb_cancel = bld["b_rgb_cancel"]
 rgb_sr = bld["rgb_sr"]
@@ -114,7 +111,7 @@ rgb_hr = bld["rgb_hr"]
 rgb_hg = bld["rgb_hg"]
 rgb_hb = bld["rgb_hb"]
 b_rgb_ok = bld["b_rgb_ok"]
-#grayscale
+# grayscale
 grayW = bld["grayW"]
 b_gray_cancel = bld["b_gray_cancel"]
 gray_r = bld["gray_r"]
@@ -125,7 +122,7 @@ gray_gb = bld["gray_gb"]
 gray_br = bld["gray_br"]
 gray_rgb = bld["gray_rgb"]
 b_gray_ok = bld["b_gray_ok"]
-#blur 
+# blur 
 blurW = bld["blurW"]
 b_blur_cancel = bld["b_blur_cancel"]
 a_blur_radius_s = bld["a_blur_radius_s"]
@@ -134,13 +131,13 @@ blur_mask_aver = bld["blur_mask_aver"]
 blur_mask_circ = bld["blur_mask_circ"]
 blur_mask_lp3 = bld["blur_mask_lp3"]
 b_blur_ok = bld["b_blur_ok"]
-#sharp 
+# sharp 
 sharpW = bld["sharpW"]
 b_sharp_cancel = bld["b_sharp_cancel"]
 a_sharp_radius_s = bld["a_sharp_radius_s"]
 a_sharp_intens_s = bld["a_sharp_intens_s"]
 b_sharp_ok = bld["b_sharp_ok"]
-#transform
+# transform
 transitW = bld["transitW"]
 a_transl_vect_x = bld["a_transl_vect_x"]
 a_transl_vect_y = bld["a_transl_vect_y"]
@@ -187,21 +184,17 @@ orig_ld = bld["orig_ld"]
 transitLimitW = bld["transitLimitW"]
 b_transit_limit_cancel = bld["b_transit_limit_cancel"]
 
-
-"""
-a = save_dialog("Save as...", mainW, ("*.jpg", GtkFileFilter("*.jpg", name="All supported formats")))
-print(a)
-"""
-
 # CALLBACK FUNCTIONS
 function open_fileopen(w)
     path = open_dialog("Pick an image file", GtkNullContainer(), (GtkFileFilter("*.jpg", name="All supported formats"), "*.jpg"))
-    img = load(path)
-    new_current_image(img, cnv)
+    if path != ""
+        img = load(path)
+        new_current_image(img, cnv)
+    end
 end
 function save_filesaveas(w)
     path_raw = save_dialog("Save as...", mainW, ("*.jpg", GtkFileFilter("*.jpg", name="All supported formats")))
-    if path_raw[end-3:end] != ".jpg"
+    if path_raw[end - 3:end] != ".jpg"
         global saving_path = path_raw * ".jpg"
     else
         global saving_path = path_raw
@@ -294,8 +287,8 @@ function show_selection(image, range_left, range_right, range_up, range_down)
     
     img_height = size(color_matrices[1])[1]
     img_width = size(color_matrices[1])[2]
-    ru = (max(Int(floor(range_up*img_height/100)),1), max(Int(floor((100-range_right)*img_width/100)),1))
-    ld = (max(Int(floor((100-range_down)*img_height/100)),1), max(Int(floor(range_left*img_width/100)),1))
+    ru = (max(Int(floor(range_up * img_height / 100)), 1), max(Int(floor((100 - range_right) * img_width / 100)), 1))
+    ld = (max(Int(floor((100 - range_down) * img_height / 100)), 1), max(Int(floor(range_left * img_width / 100)), 1))
 
 
     for i in 1:3
@@ -310,7 +303,7 @@ function show_selection(image, range_left, range_right, range_up, range_down)
     
     selection_image = ManagePic.matriceRGB(color_matrices...)
     imshow(cnv, selection_image)
-end #RGB
+end # RGB
 
 function range_open(w)
     
@@ -327,9 +320,6 @@ function range_open(w)
     show(b_range_cancel)
     show(b_range_ok)
 end
-
-
-
 
 function range_accept(w)
     show(transitW)
@@ -349,28 +339,28 @@ end
 function update_range_left(w)
     global range_left_val = get_gtk_property(w, :value, Int)
     if range_left_val + range_right_val >= 99
-        set_gtk_property!(w, :value, 99-range_right_val)
+        set_gtk_property!(w, :value, 99 - range_right_val)
     end
     show_selection(current_image, range_left_val, range_right_val, range_up_val, range_down_val)
 end
 function update_range_right(w)
     global range_right_val = get_gtk_property(w, :value, Int)
     if range_right_val + range_left_val >= 99
-        set_gtk_property!(w, :value, 99-range_left_val)
+        set_gtk_property!(w, :value, 99 - range_left_val)
     end
     show_selection(current_image, range_left_val, range_right_val, range_up_val, range_down_val)
 end
 function update_range_up(w)
     global range_up_val = get_gtk_property(w, :value, Int)
     if range_up_val + range_down_val >= 99
-        set_gtk_property!(w, :value, 99-range_down_val)
+        set_gtk_property!(w, :value, 99 - range_down_val)
     end
     show_selection(current_image, range_left_val, range_right_val, range_up_val, range_down_val)
 end
 function update_range_down(w)
     global range_down_val = get_gtk_property(w, :value, Int)
     if range_down_val + range_up_val >= 99
-        set_gtk_property!(w, :value, 99-range_up_val)
+        set_gtk_property!(w, :value, 99 - range_up_val)
     end
     show_selection(current_image, range_left_val, range_right_val, range_up_val, range_down_val)
 end
@@ -389,18 +379,18 @@ function draw_transit_list()
     for i in 1:length(transit_given_reg)
         if transit_given_reg[i][1] == 't'
             set_gtk_property!(transit_list_reg[i][2], :label,
-                string("Translation: (", string( transit_given_reg[i][2]),", ", string( transit_given_reg[i][3]),")"))
+                string("Translation: (", string(transit_given_reg[i][2]), ", ", string(transit_given_reg[i][3]), ")"))
         elseif transit_given_reg[i][1] == 's'
             set_gtk_property!(transit_list_reg[i][2], :label,
-             string("Scaling: (", string( transit_given_reg[i][2]),", ", string( transit_given_reg[i][3]),")"))
+             string("Scaling: (", string(transit_given_reg[i][2]), ", ", string(transit_given_reg[i][3]), ")"))
         elseif transit_given_reg[i][1] == 'r'
             set_gtk_property!(transit_list_reg[i][2], :label,
-             string("Rotation: ", string( transit_given_reg[i][2]), "°"))
+             string("Rotation: ", string(transit_given_reg[i][2]), "°"))
         end
 
         show(transit_list_reg[i][1])
     end
-    for i in length(transit_given_reg)+1:5
+    for i in length(transit_given_reg) + 1:5
         hide(transit_list_reg[i][1])
     end
 end
@@ -418,7 +408,6 @@ function transl_add(w)
     end
     draw_transit_list()
 end
-
 
 function rotat_add(w)
     if transits_counter >= 5
@@ -483,18 +472,14 @@ function orig_update(w)
     end
 end
 
-
-
-
-
-
 function transit_limit_dialog_open(w)
     show(transitLimitW)    
 end
 transit_limit_dialog_close(w) = hide(transitLimitW)
 
 
-# backend functions calls
+
+# BACKEND FUNCTIONS CALL
 function call_brctr(w)
     rgb = ManagePic.generateMatricesRGB(current_image)
     brightness_fact = get_gtk_property(a_brightness, :value, Float64)
@@ -650,7 +635,7 @@ function call_affin(w)
             end
         end
         transl_vect = (transl_y, transl_x)
-        rgb = transformationFunctions.selectionTransform(rgb, selection_ld, selection_ru, [(origin, s_r_list,transl_vect)])
+        rgb = transformationFunctions.selectionTransform(rgb, selection_ld, selection_ru, [(origin, s_r_list, transl_vect)])
         new_current_image(ManagePic.matriceRGB(rgb...), cnv)
     else
         new_current_image(current_image, cnv)
@@ -757,7 +742,7 @@ signal_connect(transit_limit_dialog_close, b_transit_limit_cancel, "clicked")
 signal_connect(call_xmirr, b_xmirr, "clicked")
 signal_connect(call_ymirr, b_ymirr, "clicked")
 
-
+# INITIAL OPERATIONS EXECUTE
 
 global rgb_choice = rgb_sr
 global gray_choice = gray_rgb
@@ -772,3 +757,4 @@ hide(b_range_cancel)
 hide(b_range_ok)
 open_fileopen(mainW)
 
+end
