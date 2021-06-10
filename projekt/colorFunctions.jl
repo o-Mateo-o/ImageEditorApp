@@ -2,6 +2,8 @@
 include("ManagePic.jl")
 using .ManagePic
 
+module colorFunctions 
+
 # auxiliary functions
 
 """
@@ -250,4 +252,5 @@ function changeColors(rgb, point) # point is in range [0,360]
         newRGB = hsl2rgb(trypletHSL)
         return newRGB
     end
+end
 end
