@@ -2570,7 +2570,7 @@
         <property name="vexpand">True</property>
         <child>
           <object class="GtkButton" id="b_transit_limit_cancel">
-            <property name="label" translatable="yes">button</property>
+            <property name="label" translatable="yes">Ok.</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>

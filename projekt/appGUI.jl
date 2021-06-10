@@ -14,6 +14,7 @@ saving_path = ""
 save_flag = false
 undo_counter = -1
 transits_counter = 0
+transit_given_reg = []
 
 
 current_image = Array{RGB{Normed{UInt8,8}},2}
@@ -360,12 +361,34 @@ function update_range_down(w)
 end
 
 function transit_open(w)
+    global transits_counter = 0
     for i in 1:5
         hide(transit_list_reg[i][1])
+        global transit_given_reg = []
     end
     show(transitW)    
 end
 transit_close(w) = hide(transitW)
+
+function draw_transit_list()
+    for i in 1:length(transit_given_reg)
+        if transit_given_reg[i][1] == 't'
+            set_gtk_property!(transit_list_reg[i][2], :label,
+                string("Translation: (", string( transit_given_reg[i][2]),", ", string( transit_given_reg[i][3]),")"))
+        elseif transit_given_reg[i][1] == 's'
+            set_gtk_property!(transit_list_reg[i][2], :label,
+             string("Scaling: (", string( transit_given_reg[i][2]),", ", string( transit_given_reg[i][3]),")"))
+        elseif transit_given_reg[i][1] == 'r'
+            set_gtk_property!(transit_list_reg[i][2], :label,
+             string("Rotation: ", string( transit_given_reg[i][2]), "°"))
+        end
+
+        show(transit_list_reg[i][1])
+    end
+    for i in length(transit_given_reg)+1:5
+        hide(transit_list_reg[i][1])
+    end
+end
 
 function transl_add(w)
     if transits_counter >= 5
@@ -374,13 +397,14 @@ function transl_add(w)
         vect_x = get_gtk_property(a_transl_vect_x, :value,  Float32)
         vect_y = get_gtk_property(a_transl_vect_y, :value, Float32)
         if !(vect_x == 0.0 && vect_y == 0.0)
+            push!(transit_given_reg, ('t', vect_x, vect_y))
             global transits_counter += 1
-            set_gtk_property!(transit_list_reg[transits_counter][2], :label,
-             string("Translation: (", string(vect_x),", ", string(vect_y),")"))
-            show(transit_list_reg[transits_counter][1]) 
         end
     end
+    draw_transit_list()
+    println(transits_counter)
 end
+
 
 function rotat_add(w)
     if transits_counter >= 5
@@ -388,12 +412,12 @@ function rotat_add(w)
     else
         angle = get_gtk_property(a_rotat_angle, :value, Float32)
         if angle != 0
+            push!(transit_given_reg, ('r', angle))
             global transits_counter += 1
-            set_gtk_property!(transit_list_reg[transits_counter][2], :label,
-             string("Rotation: ", string(angle), "°"))
-            show(transit_list_reg[transits_counter][1]) 
         end
     end
+    draw_transit_list()
+    println(transits_counter)
 end
 
 function scale_add(w)
@@ -403,33 +427,50 @@ function scale_add(w)
         ratio_x = get_gtk_property(a_scale_ratio_x, :value, Float32)
         ratio_y = get_gtk_property(a_scale_ratio_y, :value,  Float32)
         if !(ratio_x == 1.0 && ratio_y == 1.0)
+            push!(transit_given_reg, ('s', ratio_x, ratio_y))
             global transits_counter += 1
-            set_gtk_property!(transit_list_reg[transits_counter][2], :label,
-             string("Scaling: (", string(ratio_x),", ", string(ratio_y),")"))
-            show(transit_list_reg[transits_counter][1]) 
         end
     end
+    draw_transit_list()
+    println(transits_counter)
 end
 
 function transit_del_elem_1(w)
     global transits_counter -= 1
-    hide(transit_list_reg[1][1])    
+    println(transits_counter)
+    hide(transit_list_reg[1][1])
+    splice!(transit_given_reg, 1)
+    draw_transit_list()
+    # for i in 1:5
+    #     println(g)
 end
 function transit_del_elem_2(w)
     global transits_counter -= 1
-    hide(transit_list_reg[2][1])    
+    println(transits_counter)
+    hide(transit_list_reg[2][1])
+    splice!(transit_given_reg, 2)
+    draw_transit_list()
 end
 function transit_del_elem_3(w)
     global transits_counter -= 1
-    hide(transit_list_reg[3][1])    
+    println(transits_counter)
+    hide(transit_list_reg[3][1])
+    splice!(transit_given_reg, 3)  
+    draw_transit_list() 
 end
 function transit_del_elem_4(w)
     global transits_counter -= 1
-    hide(transit_list_reg[4][1])    
+    println(transits_counter)
+    hide(transit_list_reg[4][1])
+    splice!(transit_given_reg, 4)    
+    draw_transit_list()
 end
 function transit_del_elem_5(w)
     global transits_counter -= 1
-    hide(transit_list_reg[5][1])    
+    println(transits_counter)
+    hide(transit_list_reg[5][1])
+    splice!(transit_given_reg, 5)     
+    draw_transit_list()
 end
 
 
