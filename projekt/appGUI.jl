@@ -1,4 +1,3 @@
-module RomeoGUI
 include("blurrFunctions.jl")
 include("colorFunctions.jl")
 include("transformationFunctions.jl")
@@ -756,5 +755,3 @@ hide(scale_up)
 hide(b_range_cancel)
 hide(b_range_ok)
 open_fileopen(mainW)
-
-end
