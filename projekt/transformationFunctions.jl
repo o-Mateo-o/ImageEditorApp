@@ -1,3 +1,5 @@
+module transformationFunctions
+
 ##################################################################################
 # AFFINE TRANSITION
 ##################################################################################
@@ -306,4 +308,5 @@ function mirror(RGB, ax)
     end
     newRGB = reverse.(RGB, dims=dim)
     return newRGB 
+end
 end

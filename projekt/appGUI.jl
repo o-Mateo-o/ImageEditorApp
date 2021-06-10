@@ -1,5 +1,7 @@
-using Base: Integer
-include("ManagePic.jl")
+include("blurrFunctions.jl")
+include("colorFunctions.jl")
+include("transformationFunctions.jl")
+#include("ManagePic.jl")
 
 using Gtk, Images, ImageView
 
@@ -14,6 +16,7 @@ saving_path = ""
 save_flag = false
 undo_counter = -1
 transits_counter = 0
+transit_given_reg = []
 
 
 current_image = Array{RGB{Normed{UInt8,8}},2}
@@ -178,6 +181,7 @@ print(a)
 function open_fileopen(w)
     path = open_dialog("Pick an image file", GtkNullContainer(), (GtkFileFilter("*.jpg", name="All supported formats"), "*.jpg"))
     img = load(path)
+    print(typeof(img))
     new_current_image(img, cnv)
 end
 function save_filesaveas(w)
@@ -269,17 +273,13 @@ end
 
 function show_selection(image, range_left, range_right, range_up, range_down)   
     
-    r = (Float64.(red.(image)))
-    g = (Float64.(green.(image)))
-    b = (Float64.(blue.(image)))
-
-    img_height = size(r)[1]
-    img_width = size(r)[2]
-
+    color_matrices = ManagePic.generateMatricesRGB(image)
+    
+    img_height = size(color_matrices[1])[1]
+    img_width = size(color_matrices[1])[2]
     ru = (max(Int(floor(range_up*img_height/100)),1), max(Int(floor((100-range_right)*img_width/100)),1))
     ld = (max(Int(floor((100-range_down)*img_height/100)),1), max(Int(floor(range_left*img_width/100)),1))
-    
-    color_matrices = [r, g, b]
+
 
     for i in 1:3
         original_matrix = copy(color_matrices[i])
@@ -360,12 +360,34 @@ function update_range_down(w)
 end
 
 function transit_open(w)
+    global transits_counter = 0
     for i in 1:5
         hide(transit_list_reg[i][1])
+        global transit_given_reg = []
     end
     show(transitW)    
 end
 transit_close(w) = hide(transitW)
+
+function draw_transit_list()
+    for i in 1:length(transit_given_reg)
+        if transit_given_reg[i][1] == 't'
+            set_gtk_property!(transit_list_reg[i][2], :label,
+                string("Translation: (", string( transit_given_reg[i][2]),", ", string( transit_given_reg[i][3]),")"))
+        elseif transit_given_reg[i][1] == 's'
+            set_gtk_property!(transit_list_reg[i][2], :label,
+             string("Scaling: (", string( transit_given_reg[i][2]),", ", string( transit_given_reg[i][3]),")"))
+        elseif transit_given_reg[i][1] == 'r'
+            set_gtk_property!(transit_list_reg[i][2], :label,
+             string("Rotation: ", string( transit_given_reg[i][2]), "°"))
+        end
+
+        show(transit_list_reg[i][1])
+    end
+    for i in length(transit_given_reg)+1:5
+        hide(transit_list_reg[i][1])
+    end
+end
 
 function transl_add(w)
     if transits_counter >= 5
@@ -374,13 +396,14 @@ function transl_add(w)
         vect_x = get_gtk_property(a_transl_vect_x, :value,  Float32)
         vect_y = get_gtk_property(a_transl_vect_y, :value, Float32)
         if !(vect_x == 0.0 && vect_y == 0.0)
+            push!(transit_given_reg, ('t', vect_x, vect_y))
             global transits_counter += 1
-            set_gtk_property!(transit_list_reg[transits_counter][2], :label,
-             string("Translation: (", string(vect_x),", ", string(vect_y),")"))
-            show(transit_list_reg[transits_counter][1]) 
         end
     end
+    draw_transit_list()
+    println(transits_counter)
 end
+
 
 function rotat_add(w)
     if transits_counter >= 5
@@ -388,12 +411,12 @@ function rotat_add(w)
     else
         angle = get_gtk_property(a_rotat_angle, :value, Float32)
         if angle != 0
+            push!(transit_given_reg, ('r', angle))
             global transits_counter += 1
-            set_gtk_property!(transit_list_reg[transits_counter][2], :label,
-             string("Rotation: ", string(angle), "°"))
-            show(transit_list_reg[transits_counter][1]) 
         end
     end
+    draw_transit_list()
+    println(transits_counter)
 end
 
 function scale_add(w)
@@ -403,34 +426,52 @@ function scale_add(w)
         ratio_x = get_gtk_property(a_scale_ratio_x, :value, Float32)
         ratio_y = get_gtk_property(a_scale_ratio_y, :value,  Float32)
         if !(ratio_x == 1.0 && ratio_y == 1.0)
+            push!(transit_given_reg, ('s', ratio_x, ratio_y))
             global transits_counter += 1
-            set_gtk_property!(transit_list_reg[transits_counter][2], :label,
-             string("Scaling: (", string(ratio_x),", ", string(ratio_y),")"))
-            show(transit_list_reg[transits_counter][1]) 
         end
     end
+    draw_transit_list()
+    println(transits_counter)
 end
 
 function transit_del_elem_1(w)
     global transits_counter -= 1
-    hide(transit_list_reg[1][1])    
+    println(transits_counter)
+    hide(transit_list_reg[1][1])
+    splice!(transit_given_reg, 1)
+    draw_transit_list()
+    # for i in 1:5
+    #     println(g)
 end
 function transit_del_elem_2(w)
     global transits_counter -= 1
-    hide(transit_list_reg[2][1])    
+    println(transits_counter)
+    hide(transit_list_reg[2][1])
+    splice!(transit_given_reg, 2)
+    draw_transit_list()
 end
 function transit_del_elem_3(w)
     global transits_counter -= 1
-    hide(transit_list_reg[3][1])    
+    println(transits_counter)
+    hide(transit_list_reg[3][1])
+    splice!(transit_given_reg, 3)  
+    draw_transit_list() 
 end
 function transit_del_elem_4(w)
     global transits_counter -= 1
-    hide(transit_list_reg[4][1])    
+    println(transits_counter)
+    hide(transit_list_reg[4][1])
+    splice!(transit_given_reg, 4)    
+    draw_transit_list()
 end
 function transit_del_elem_5(w)
     global transits_counter -= 1
-    hide(transit_list_reg[5][1])    
+    println(transits_counter)
+    hide(transit_list_reg[5][1])
+    splice!(transit_given_reg, 5)     
+    draw_transit_list()
 end
+
 
 
 
@@ -440,6 +481,24 @@ function transit_limit_dialog_open(w)
     show(transitLimitW)    
 end
 transit_limit_dialog_close(w) = hide(transitLimitW)
+
+
+# backend functions calls
+function call_brctr(w)
+    rgb = ManagePic.generateMatricesRGB(current_image)
+    brightness_fact = get_gtk_property(a_brightness, :value, Float64)
+    contrast_fact = get_gtk_property(a_contrast, :value, Float64)
+
+    if brightness_fact != 0
+        rgb = colorFunctions.changeLightness(rgb, brightness_fact)
+    end
+    if contrast_fact != 0
+        rgb = colorFunctions.changeContrast(rgb, contrast_fact)
+    end
+
+    new_current_image(ManagePic.matriceRGB(rgb...), cnv)     
+end
+
     
 
 
@@ -453,6 +512,7 @@ signal_connect(undo_clb, b_undo, "activate")
 
 signal_connect(brctr_open, b_brctr, "clicked")
 signal_connect(brctr_close, b_brctr_cancel, "clicked")
+signal_connect(call_brctr, b_brctr_ok, "clicked")
 
 signal_connect(hsl_open, b_hsl, "clicked")
 signal_connect(hsl_close, b_hsl_cancel, "clicked")

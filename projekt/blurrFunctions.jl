@@ -1,3 +1,5 @@
+module blurrFunctions
+
 #####################
 # auxiliary functions
 #####################
@@ -360,3 +362,5 @@ function whatIfJustBlue(picture, typeofmask)
     
     return newColorList
 end # whatIfJustBlue
+    
+end
