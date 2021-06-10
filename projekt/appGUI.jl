@@ -1,3 +1,4 @@
+using Base: Integer
 include("ManagePic.jl")
 
 using Gtk, Images, ImageView
@@ -12,6 +13,7 @@ bld = GtkBuilder(filename="projekt/GUILayout.glade")
 saving_path = ""
 save_flag = false
 undo_counter = -1
+transits_counter = 0
 
 
 current_image = Array{RGB{Normed{UInt8,8}},2}
@@ -141,6 +143,30 @@ b_add_scale = bld["b_add_scale"]
 combo_origin = bld["combo_origin"]
 b_transit_cancel = bld["b_transit_cancel"]
 b_transit_ok = bld["b_transit_ok"]
+list_transit = bld["list_transit"]
+item_transit_1 = bld["item_transit_1"]
+item_transit_2 = bld["item_transit_2"]
+item_transit_3 = bld["item_transit_3"]
+item_transit_4 = bld["item_transit_4"]
+item_transit_5 = bld["item_transit_5"]
+label_transit_1 = bld["label_transit_1"]
+label_transit_2 = bld["label_transit_2"]
+label_transit_3 = bld["label_transit_3"]
+label_transit_4 = bld["label_transit_4"]
+label_transit_5 = bld["label_transit_5"]
+b_minus_transit_1 = bld["b_minus_transit_1"]
+b_minus_transit_2 = bld["b_minus_transit_2"]
+b_minus_transit_3 = bld["b_minus_transit_3"]
+b_minus_transit_4 = bld["b_minus_transit_4"]
+b_minus_transit_5 = bld["b_minus_transit_5"]
+transit_list_reg = [[item_transit_1, label_transit_1, b_minus_transit_1],
+                    [item_transit_2, label_transit_2, b_minus_transit_2],
+                    [item_transit_3, label_transit_3, b_minus_transit_3],
+                    [item_transit_4, label_transit_4, b_minus_transit_4],
+                    [item_transit_5, label_transit_5, b_minus_transit_5],]
+
+transitLimitW = bld["transitLimitW"]
+b_transit_limit_cancel = bld["b_transit_limit_cancel"]
 
 
 """
@@ -334,9 +360,86 @@ function update_range_down(w)
 end
 
 function transit_open(w)
+    for i in 1:5
+        hide(transit_list_reg[i][1])
+    end
     show(transitW)    
 end
 transit_close(w) = hide(transitW)
+
+function transl_add(w)
+    if transits_counter >= 5
+        show(transitLimitW)
+    else
+        vect_x = get_gtk_property(a_transl_vect_x, :value,  Float32)
+        vect_y = get_gtk_property(a_transl_vect_y, :value, Float32)
+        if !(vect_x == 0.0 && vect_y == 0.0)
+            global transits_counter += 1
+            set_gtk_property!(transit_list_reg[transits_counter][2], :label,
+             string("Translation: (", string(vect_x),", ", string(vect_y),")"))
+            show(transit_list_reg[transits_counter][1]) 
+        end
+    end
+end
+
+function rotat_add(w)
+    if transits_counter >= 5
+        show(transitLimitW)
+    else
+        angle = get_gtk_property(a_rotat_angle, :value, Float32)
+        if angle != 0
+            global transits_counter += 1
+            set_gtk_property!(transit_list_reg[transits_counter][2], :label,
+             string("Rotation: ", string(angle), "°"))
+            show(transit_list_reg[transits_counter][1]) 
+        end
+    end
+end
+
+function scale_add(w)
+    if transits_counter >= 5
+        show(transitLimitW)
+    else
+        ratio_x = get_gtk_property(a_scale_ratio_x, :value, Float32)
+        ratio_y = get_gtk_property(a_scale_ratio_y, :value,  Float32)
+        if !(ratio_x == 1.0 && ratio_y == 1.0)
+            global transits_counter += 1
+            set_gtk_property!(transit_list_reg[transits_counter][2], :label,
+             string("Scaling: (", string(ratio_x),", ", string(ratio_y),")"))
+            show(transit_list_reg[transits_counter][1]) 
+        end
+    end
+end
+
+function transit_del_elem_1(w)
+    global transits_counter -= 1
+    hide(transit_list_reg[1][1])    
+end
+function transit_del_elem_2(w)
+    global transits_counter -= 1
+    hide(transit_list_reg[2][1])    
+end
+function transit_del_elem_3(w)
+    global transits_counter -= 1
+    hide(transit_list_reg[3][1])    
+end
+function transit_del_elem_4(w)
+    global transits_counter -= 1
+    hide(transit_list_reg[4][1])    
+end
+function transit_del_elem_5(w)
+    global transits_counter -= 1
+    hide(transit_list_reg[5][1])    
+end
+
+
+
+
+
+function transit_limit_dialog_open(w)
+    show(transitLimitW)    
+end
+transit_limit_dialog_close(w) = hide(transitLimitW)
     
 
 
@@ -388,6 +491,17 @@ signal_connect(update_range_up, a_range_up, "value-changed")
 signal_connect(update_range_down, a_range_down, "value-changed")
 signal_connect(transit_open, b_range_ok, "clicked")
 signal_connect(transit_close, b_transit_cancel, "clicked")
+
+signal_connect(transl_add, b_add_transl, "clicked")
+signal_connect(rotat_add, b_add_rotat, "clicked")
+signal_connect(scale_add, b_add_scale, "clicked")
+signal_connect(transit_del_elem_1, transit_list_reg[1][3], "clicked")
+signal_connect(transit_del_elem_2, transit_list_reg[2][3], "clicked")
+signal_connect(transit_del_elem_3, transit_list_reg[3][3], "clicked")
+signal_connect(transit_del_elem_4, transit_list_reg[4][3], "clicked")
+signal_connect(transit_del_elem_5, transit_list_reg[5][3], "clicked")
+
+signal_connect(transit_limit_dialog_close, b_transit_limit_cancel, "clicked")
 
 
 #function f1(w, var)
