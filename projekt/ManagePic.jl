@@ -20,6 +20,19 @@ function generateMatricesRGB(filename)
 end # RGB
 
 """
+Convert a loaded image to color matrices.
+
+# Arguments
+- `img`::Array{RGB{Normed{UInt8,8}},2}`: raw image.
+"""
+function generateMatricesRGB(img)
+    r = (Float64.(red.(img)))
+    g = (Float64.(green.(img)))
+    b = (Float64.(blue.(img)))
+    return [r,g,b]
+end # RGB
+
+"""
 Convert color matrices o RGB matrice.
 
 # Arguments
