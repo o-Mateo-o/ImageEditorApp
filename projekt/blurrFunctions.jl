@@ -363,4 +363,4 @@ function whatIfJustBlue(picture, typeofmask)
     return newColorList
 end # whatIfJustBlue
     
-end
+end 

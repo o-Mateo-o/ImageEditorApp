@@ -46,7 +46,7 @@ end
 rgb_choice = ""
 gray_choice = ""
 blur_choice = ""
-sharp_choice = ""
+orig_choice = ""
 range_right_val = 0
 range_left_val = 0
 range_up_val = 0
@@ -139,9 +139,6 @@ sharpW = bld["sharpW"]
 b_sharp_cancel = bld["b_sharp_cancel"]
 a_sharp_radius_s = bld["a_sharp_radius_s"]
 a_sharp_intens_s = bld["a_sharp_intens_s"]
-sharp_mask_mean = bld["sharp_mask_mean"]
-sharp_mask_hp1 = bld["sharp_mask_hp1"]
-sharp_mask_hp2 = bld["sharp_mask_hp2"]
 b_sharp_ok = bld["b_sharp_ok"]
 #transform
 transitW = bld["transitW"]
@@ -153,7 +150,7 @@ a_scale_ratio_y = bld["a_scale_ratio_y"]
 b_add_transl = bld["b_add_transl"]
 b_add_rotat = bld["b_add_rotat"]
 b_add_scale = bld["b_add_scale"]
-combo_origin = bld["combo_origin"]
+
 b_transit_cancel = bld["b_transit_cancel"]
 b_transit_ok = bld["b_transit_ok"]
 list_transit = bld["list_transit"]
@@ -177,6 +174,15 @@ transit_list_reg = [[item_transit_1, label_transit_1, b_minus_transit_1],
                     [item_transit_3, label_transit_3, b_minus_transit_3],
                     [item_transit_4, label_transit_4, b_minus_transit_4],
                     [item_transit_5, label_transit_5, b_minus_transit_5],]
+orig_c = bld["orig_c"]
+orig_l = bld["orig_l"]
+orig_r = bld["orig_r"]
+orig_u = bld["orig_u"]
+orig_d = bld["orig_d"]
+orig_ru = bld["orig_ru"]
+orig_rd = bld["orig_rd"]
+orig_lu = bld["orig_lu"]
+orig_ld = bld["orig_ld"]
 
 transitLimitW = bld["transitLimitW"]
 b_transit_limit_cancel = bld["b_transit_limit_cancel"]
@@ -257,6 +263,7 @@ gray_close(w) = hide(grayW)
 
 
 function blur_open(w)
+    set_gtk_property!(a_blur_intens_s, :sensitive, false)
     show(blurW)
     if get_gtk_property(blur_mask_circ, :active, Bool)
         set_gtk_property!(a_blur_intens_s, :sensitive, false)
@@ -267,7 +274,7 @@ function blur_update(w)
     if get_gtk_property(w, :active, Bool)
         global blur_choice = w
     end
-    if w == blur_mask_circ
+    if w == blur_mask_circ || w == blur_mask_aver
         set_gtk_property!(a_blur_intens_s, :sensitive, false)
     else
         set_gtk_property!(a_blur_intens_s, :sensitive, true)
@@ -279,11 +286,7 @@ function sharp_open(w)
     show(sharpW)
 end
 sharp_close(w) = hide(sharpW)
-function sharp_update(w)
-    if get_gtk_property(w, :active, Bool)
-        global sharp_choice = w
-    end
-end
+
 
 function show_selection(image, range_left, range_right, range_up, range_down)   
     
@@ -474,6 +477,11 @@ function transit_del_elem_5(w)
     splice!(transit_given_reg, 5)     
     draw_transit_list()
 end
+function orig_update(w)
+    if get_gtk_property(w, :active, Bool)
+        global orig_choice = w
+    end
+end
 
 
 
@@ -571,6 +579,84 @@ function call_negative(w)
     new_current_image(ManagePic.matriceRGB(rgb...), cnv)
 end
 
+function call_blur(w)
+    rgb = ManagePic.generateMatricesRGB(current_image)
+    blur_radius = get_gtk_property(a_blur_radius_s, :value, Int)
+    blur_intens = get_gtk_property(a_blur_intens_s, :value, Int)
+    if blur_radius % 2 == 0
+        blur_radius += 1
+    end
+    if blur_choice == blur_mask_aver
+        rgb = blurrFunctions.converting(rgb, blurrFunctions.average(blur_radius))
+    elseif blur_choice == blur_mask_circ
+        rgb = blurrFunctions.converting(rgb, blurrFunctions.circle(blur_radius))
+    elseif blur_choice == blur_mask_lp3
+        rgb = blurrFunctions.converting(rgb, blurrFunctions.LP3(blur_radius, blur_intens))
+    end
+    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    hide(blurW)
+end
+
+function call_sharp(w)
+    rgb = ManagePic.generateMatricesRGB(current_image)
+    sharp_radius = get_gtk_property(a_sharp_radius_s, :value, Int)
+    sharp_intens = get_gtk_property(a_sharp_intens_s, :value, Int)
+    if sharp_radius % 2 == 0
+        sharp_radius += 1
+    end
+    rgb = blurrFunctions.converting(rgb, blurrFunctions.meanRemoval(sharp_radius, sharp_intens))
+
+    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    hide(sharpW)
+end
+
+function call_affin(w)
+    
+    rgb = ManagePic.generateMatricesRGB(current_image)
+    println("test1")
+
+    println("test2")
+    origin = (0, 0)
+    s_r_list = []
+    df_origin = transformationFunctions.defaultOrigin(selection_ld, selection_ru)
+    if orig_choice == orig_c
+        origin = df_origin
+    elseif orig_choice == orig_l
+        origin = (df_origin[1], selection_ld[2])
+    elseif orig_choice == orig_r
+        origin = (df_origin[1], selection_ru[2])
+    elseif orig_choice == orig_u
+        origin = (selection_ru[1], df_origin[2])
+    elseif orig_choice == orig_d
+        origin = (selection_ld[1], df_origin[2])
+    elseif orig_choice == orig_ru
+        origin = selection_ru
+    elseif orig_choice == orig_ld
+        origin = selection_ld
+    elseif orig_choice == orig_rd
+        origin = (selection_ld[1], selection_ru[2])
+    elseif orig_choice == orig_lu
+        origin = (selection_ru[1], selection_ld[2])
+    end
+    transl_x = 0
+    transl_y = 0
+    println(origin)
+    for i in 1:length(transit_given_reg)
+        if transit_given_reg[i][1] == 't'
+            transl_x += transit_given_reg[i][2]
+            transl_y -= transit_given_reg[i][3]
+        elseif transit_given_reg[i][1] == 's'
+            push!(s_r_list, ('s', (transit_given_reg[i][3],  transit_given_reg[i][2])))
+        elseif transit_given_reg[i][1] == 'r'
+            push!(s_r_list, ('r', transit_given_reg[i][2]))
+        end
+    end
+    transl_vect = (transl_y, transl_x)
+    println("test3")
+    rgb = transformationFunctions.selectionTransform(rgb, selection_ld, selection_ru, [(origin, s_r_list,transl_vect)])
+    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    hide(transitW)
+end
 
     
 
@@ -619,12 +705,11 @@ signal_connect(blur_close, b_blur_cancel, "clicked")
 signal_connect(blur_update, blur_mask_aver, "toggled")
 signal_connect(blur_update, blur_mask_circ, "toggled")
 signal_connect(blur_update, blur_mask_lp3, "toggled")
+signal_connect(call_blur, b_blur_ok, "clicked")
 
 signal_connect(sharp_open, b_sharp, "clicked")
 signal_connect(sharp_close, b_sharp_cancel, "clicked")
-signal_connect(sharp_update, sharp_mask_mean, "toggled")
-signal_connect(sharp_update, sharp_mask_hp1, "toggled")
-signal_connect(sharp_update, sharp_mask_hp2, "toggled")
+signal_connect(call_sharp, b_sharp_ok, "clicked")
 
 signal_connect(range_open, b_transit, "clicked")
 signal_connect(range_accept, b_range_ok, "clicked")
@@ -640,11 +725,21 @@ signal_connect(transit_close, b_transit_cancel, "clicked")
 signal_connect(transl_add, b_add_transl, "clicked")
 signal_connect(rotat_add, b_add_rotat, "clicked")
 signal_connect(scale_add, b_add_scale, "clicked")
+signal_connect(orig_update, orig_c, "toggled")
+signal_connect(orig_update, orig_l, "toggled")
+signal_connect(orig_update, orig_r, "toggled")
+signal_connect(orig_update, orig_d, "toggled")
+signal_connect(orig_update, orig_u, "toggled")
+signal_connect(orig_update, orig_ld, "toggled")
+signal_connect(orig_update, orig_ru, "toggled")
+signal_connect(orig_update, orig_rd, "toggled")
+signal_connect(orig_update, orig_lu, "toggled")
 signal_connect(transit_del_elem_1, transit_list_reg[1][3], "clicked")
 signal_connect(transit_del_elem_2, transit_list_reg[2][3], "clicked")
 signal_connect(transit_del_elem_3, transit_list_reg[3][3], "clicked")
 signal_connect(transit_del_elem_4, transit_list_reg[4][3], "clicked")
 signal_connect(transit_del_elem_5, transit_list_reg[5][3], "clicked")
+signal_connect(call_affin, b_transit_ok, "clicked")
 
 signal_connect(transit_limit_dialog_close, b_transit_limit_cancel, "clicked")
 
@@ -652,6 +747,8 @@ signal_connect(transit_limit_dialog_close, b_transit_limit_cancel, "clicked")
 
 global rgb_choice = rgb_sr
 global gray_choice = gray_rgb
+global blur_choice = blur_mask_aver
+global orig_choice = orig_c
 showall(mainW)
 hide(scale_left)
 hide(scale_right)

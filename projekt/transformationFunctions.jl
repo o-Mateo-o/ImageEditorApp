@@ -211,7 +211,7 @@ Give a deafult origin point - at the center of selection.
 - `ru::Tuple{Integer, Integer}`: upper-right scaling area corner coordinates as (y, x). 
 """
 function defaultOrigin(ld, ru)
-    return ((ld[1]-ru[1])/2, (ru[2]-ld[2])/2)
+    return (ru[1]+(ld[1]-ru[1])/2, ld[2]+(ru[2]-ld[2])/2)
 end
 
 """
