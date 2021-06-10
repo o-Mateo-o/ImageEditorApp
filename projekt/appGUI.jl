@@ -613,54 +613,65 @@ end
 function call_affin(w)
     
     rgb = ManagePic.generateMatricesRGB(current_image)
-    println("test1")
-
-    println("test2")
-    origin = (0, 0)
-    s_r_list = []
-    df_origin = transformationFunctions.defaultOrigin(selection_ld, selection_ru)
-    if orig_choice == orig_c
-        origin = df_origin
-    elseif orig_choice == orig_l
-        origin = (df_origin[1], selection_ld[2])
-    elseif orig_choice == orig_r
-        origin = (df_origin[1], selection_ru[2])
-    elseif orig_choice == orig_u
-        origin = (selection_ru[1], df_origin[2])
-    elseif orig_choice == orig_d
-        origin = (selection_ld[1], df_origin[2])
-    elseif orig_choice == orig_ru
-        origin = selection_ru
-    elseif orig_choice == orig_ld
-        origin = selection_ld
-    elseif orig_choice == orig_rd
-        origin = (selection_ld[1], selection_ru[2])
-    elseif orig_choice == orig_lu
-        origin = (selection_ru[1], selection_ld[2])
-    end
-    transl_x = 0
-    transl_y = 0
-    println(origin)
-    for i in 1:length(transit_given_reg)
-        if transit_given_reg[i][1] == 't'
-            transl_x += transit_given_reg[i][2]
-            transl_y -= transit_given_reg[i][3]
-        elseif transit_given_reg[i][1] == 's'
-            push!(s_r_list, ('s', (transit_given_reg[i][3],  transit_given_reg[i][2])))
-        elseif transit_given_reg[i][1] == 'r'
-            push!(s_r_list, ('r', transit_given_reg[i][2]))
+    if length(transit_given_reg) > 0
+        origin = (0, 0)
+        s_r_list = []
+        df_origin = transformationFunctions.defaultOrigin(selection_ld, selection_ru)
+        if orig_choice == orig_c
+            origin = df_origin
+        elseif orig_choice == orig_l
+            origin = (df_origin[1], selection_ld[2])
+        elseif orig_choice == orig_r
+            origin = (df_origin[1], selection_ru[2])
+        elseif orig_choice == orig_u
+            origin = (selection_ru[1], df_origin[2])
+        elseif orig_choice == orig_d
+            origin = (selection_ld[1], df_origin[2])
+        elseif orig_choice == orig_ru
+            origin = selection_ru
+        elseif orig_choice == orig_ld
+            origin = selection_ld
+        elseif orig_choice == orig_rd
+            origin = (selection_ld[1], selection_ru[2])
+        elseif orig_choice == orig_lu
+            origin = (selection_ru[1], selection_ld[2])
         end
+        transl_x = 0
+        transl_y = 0
+        println(origin)
+        for i in 1:length(transit_given_reg)
+            if transit_given_reg[i][1] == 't'
+                transl_x += transit_given_reg[i][2]
+                transl_y -= transit_given_reg[i][3]
+            elseif transit_given_reg[i][1] == 's'
+                push!(s_r_list, ('s', (transit_given_reg[i][3],  transit_given_reg[i][2])))
+            elseif transit_given_reg[i][1] == 'r'
+                push!(s_r_list, ('r', transit_given_reg[i][2]))
+            end
+        end
+        transl_vect = (transl_y, transl_x)
+        rgb = transformationFunctions.selectionTransform(rgb, selection_ld, selection_ru, [(origin, s_r_list,transl_vect)])
+        new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    else
+        new_current_image(current_image, cnv)
     end
-    transl_vect = (transl_y, transl_x)
-    println("test3")
-    rgb = transformationFunctions.selectionTransform(rgb, selection_ld, selection_ru, [(origin, s_r_list,transl_vect)])
-    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
     hide(transitW)
+    
 end
 
+function call_xmirr(w)
+    rgb = ManagePic.generateMatricesRGB(current_image)
+    rgb = transformationFunctions.mirror(rgb, :x)
+    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+end
+
+function call_ymirr(w)
+    rgb = ManagePic.generateMatricesRGB(current_image)
+    rgb = transformationFunctions.mirror(rgb, :y)
+    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+end
     
-
-
+    
 
 # SIGNAL CONNECTING
 signal_connect(open_fileopen, b_open, "activate")
@@ -742,6 +753,9 @@ signal_connect(transit_del_elem_5, transit_list_reg[5][3], "clicked")
 signal_connect(call_affin, b_transit_ok, "clicked")
 
 signal_connect(transit_limit_dialog_close, b_transit_limit_cancel, "clicked")
+
+signal_connect(call_xmirr, b_xmirr, "clicked")
+signal_connect(call_ymirr, b_ymirr, "clicked")
 
 
 
