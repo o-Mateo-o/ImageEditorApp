@@ -1,9 +1,10 @@
-include("ManagePic.jl")
+
 include("blurrFunctions.jl")
 include("colorFunctions.jl")
 include("transformationFunctions.jl")
+#include("ManagePic.jl")
 
-using Gtk, Images, ImageView
+using Gtk, Images, ImageView, FileIO
 
 
 # GLOBAL VARIABLES AND GENERAL FUNCTIONS
@@ -194,19 +195,18 @@ function open_fileopen(w)
 end
 function save_filesaveas(w)
     path_raw = save_dialog("Save as...", mainW, ("*.jpg", GtkFileFilter("*.jpg", name="All supported formats")))
+    
     if path_raw[end - 3:end] != ".jpg"
         global saving_path = path_raw * ".jpg"
     else
         global saving_path = path_raw
     end
-    
-    savePictureRGB(saving_path, generateMatricesRGB(current_image))
-    println(saving_path)
+    Images.save(saving_path, current_image)
     global save_flag = true
 end
 function save_filesave(w)
     if save_flag == true
-        savePictureRGB(saving_path, generateMatricesRGB(current_image))
+        Images.save(saving_path, current_image)
     else
         save_filesaveas(w)
     end    
@@ -572,7 +572,7 @@ function call_blur(w)
         blur_radius += 1
     end
     if blur_choice == blur_mask_aver
-        rgb = converting(rgb, average(blur_radius))
+        rgb = converting(rgb, maskAverage(blur_radius))
     elseif blur_choice == blur_mask_circ
         rgb = converting(rgb, circle(blur_radius))
     elseif blur_choice == blur_mask_lp3
@@ -623,7 +623,6 @@ function call_affin(w)
         end
         transl_x = 0
         transl_y = 0
-        println(origin)
         for i in 1:length(transit_given_reg)
             if transit_given_reg[i][1] == 't'
                 transl_x += transit_given_reg[i][2]

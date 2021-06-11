@@ -105,7 +105,7 @@ Generate mask to blurr the picture.
 #Arguments
 - `dim::Int64`: length of side of a mask.
 """
-function average(dim)
+function maskAverage(dim)
     mask = ones(Float64, dim, dim)
     return mask
 end
