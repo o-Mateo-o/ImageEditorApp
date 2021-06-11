@@ -31,3 +31,20 @@
   * mirror reflection.
 ***
 
+## <span style="color:	#ffb6c1">**How to run this program?**</span>
+1. Clone the project to your directory: git clone https://github.com/o-Mateo-o/grafika-pakiety.git. 
+
+
+2. Type in Julia terminal: 
+   
+  * `cd("path/repo")` -*path/repo* is path to repository on your computer 
+
+   * `using Pkg; Pkg.add(["Gtk", "Images", "ImageView", "FileIO", "ImageShow"])`
+
+  * `include("runROMEO.jl")`.
+  
+    
+   Installing packages mentioned above is essential to succesfully precompile this project and make use of every its functionality.
+
+***
+
