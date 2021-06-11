@@ -32,7 +32,7 @@
 ***
 
 ## <span style="color:	#ffb6c1">**How to run this program?**</span>
-1. Clone the project to your directory: git clone https://github.com/o-Mateo-o/grafika-pakiety.git. 
+1. Clone the project to your directory: `git clone https://github.com/o-Mateo-o/grafika-pakiety.git. `
 
 
 2. Type in Julia terminal: 
