@@ -1,9 +1,8 @@
 # ManagePic.jl
-module ManagePic
 
+println("ASDAD")
 using FileIO, Images, ImageShow
 
-export generateMatricesRGB, matriceRGB, savePicture, savePictureRGB, rgb2hsl, hsl2rgb
 
 """
 Convert a file to color matrices.
@@ -176,4 +175,4 @@ function lightness(rgb)
     return l
 end
 
-end # ManagePic
+

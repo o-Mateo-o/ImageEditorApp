@@ -1,3 +1,4 @@
+include("ManagePic.jl")
 include("blurrFunctions.jl")
 include("colorFunctions.jl")
 include("transformationFunctions.jl")
@@ -199,13 +200,13 @@ function save_filesaveas(w)
         global saving_path = path_raw
     end
     
-    ManagePic.savePictureRGB(saving_path, ManagePic.generateMatricesRGB(current_image))
+    savePictureRGB(saving_path, generateMatricesRGB(current_image))
     println(saving_path)
     global save_flag = true
 end
 function save_filesave(w)
     if save_flag == true
-        ManagePic.savePictureRGB(saving_path, ManagePic.generateMatricesRGB(current_image))
+        savePictureRGB(saving_path, generateMatricesRGB(current_image))
     else
         save_filesaveas(w)
     end    
@@ -282,7 +283,7 @@ sharp_close(w) = hide(sharpW)
 
 function show_selection(image, range_left, range_right, range_up, range_down)   
     
-    color_matrices = ManagePic.generateMatricesRGB(image)
+    color_matrices = generateMatricesRGB(image)
     
     img_height = size(color_matrices[1])[1]
     img_width = size(color_matrices[1])[2]
@@ -300,7 +301,7 @@ function show_selection(image, range_left, range_right, range_up, range_down)
     global selection_ru = ru
     global selection_ld = ld
     
-    selection_image = ManagePic.matriceRGB(color_matrices...)
+    selection_image = matriceRGB(color_matrices...)
     imshow(cnv, selection_image)
 end # RGB
 
@@ -480,23 +481,23 @@ transit_limit_dialog_close(w) = hide(transitLimitW)
 
 # BACKEND FUNCTIONS CALL
 function call_brctr(w)
-    rgb = ManagePic.generateMatricesRGB(current_image)
+    rgb = generateMatricesRGB(current_image)
     brightness_fact = get_gtk_property(a_brightness, :value, Float64)
     contrast_fact = get_gtk_property(a_contrast, :value, Float64)
 
     if brightness_fact != 0
-        rgb = colorFunctions.changeBrightness(rgb, brightness_fact)
+        rgb = changeBrightness(rgb, brightness_fact)
     end
     if contrast_fact != 0
-        rgb = colorFunctions.changeContrast(rgb, contrast_fact)
+        rgb = changeContrast(rgb, contrast_fact)
     end
 
-    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    new_current_image(matriceRGB(rgb...), cnv)
     hide(brctrW)  
 end
 
 function call_hsl(w)
-    rgb = ManagePic.generateMatricesRGB(current_image)
+    rgb = generateMatricesRGB(current_image)
     hue_fact = get_gtk_property(a_hue, :value, Float64)
     satur_fact = get_gtk_property(a_satur, :value, Float64)
     light_fact =  get_gtk_property(a_light, :value, Float64)
@@ -504,103 +505,103 @@ function call_hsl(w)
         hue_fact += 360
     end
     if hue_fact != 0
-        rgb = colorFunctions.changeColors(rgb, hue_fact)
+        rgb = changeColors(rgb, hue_fact)
     end
     if satur_fact != 0
-        rgb = colorFunctions.changeSaturation(rgb, satur_fact)
+        rgb = changeSaturation(rgb, satur_fact)
     end
     if light_fact != 0
-        rgb = colorFunctions.changeLightness(rgb, light_fact)
+        rgb = changeLightness(rgb, light_fact)
     end
     
-    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    new_current_image(matriceRGB(rgb...), cnv)
     hide(hslW)  
 end
 
 function call_rgb(w)
-    rgb = ManagePic.generateMatricesRGB(current_image)
+    rgb = generateMatricesRGB(current_image)
     if rgb_choice == rgb_sr
-        rgb = colorFunctions.onlyRed(rgb)
+        rgb = onlyRed(rgb)
     elseif rgb_choice == rgb_sg
-        rgb = colorFunctions.onlyGreen(rgb)
+        rgb = onlyGreen(rgb)
     elseif rgb_choice == rgb_sb
-        rgb = colorFunctions.onlyBlue(rgb)
+        rgb = onlyBlue(rgb)
     elseif rgb_choice == rgb_hr
-        rgb = colorFunctions.withoutRed(rgb)
+        rgb = withoutRed(rgb)
     elseif rgb_choice == rgb_hg
-        rgb = colorFunctions.withoutGreen(rgb)
+        rgb = withoutGreen(rgb)
     elseif rgb_choice == rgb_hb
-        rgb = colorFunctions.withoutBlue(rgb)
+        rgb = withoutBlue(rgb)
     end
-    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    new_current_image(matriceRGB(rgb...), cnv)
     hide(rgbW)  
 end
 
 function call_gray(w)
-    rgb = ManagePic.generateMatricesRGB(current_image)
+    rgb = generateMatricesRGB(current_image)
     if gray_choice == gray_r
-        rgb = colorFunctions.redAsAGrayscale(rgb)
+        rgb = redAsAGrayscale(rgb)
     elseif gray_choice == gray_g
-        rgb = colorFunctions.greenAsAGrayscale(rgb)
+        rgb = greenAsAGrayscale(rgb)
     elseif gray_choice == gray_b
-        rgb = colorFunctions.blueAsAGrayscale(rgb)
+        rgb = blueAsAGrayscale(rgb)
     elseif gray_choice == gray_rg
-        rgb = colorFunctions.onlyBlueAndGrayscale(rgb)
+        rgb = onlyBlueAndGrayscale(rgb)
     elseif gray_choice == gray_gb
-        rgb = colorFunctions.onlyRedAndGrayscale(rgb)
+        rgb = onlyRedAndGrayscale(rgb)
     elseif gray_choice == gray_br
-        rgb = colorFunctions.withoutGreen(rgb)
+        rgb = withoutGreen(rgb)
     elseif gray_choice == gray_rgb
-        rgb = colorFunctions.grayscaleLuminosity(rgb)
+        rgb = grayscaleLuminosity(rgb)
     end
-    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    new_current_image(matriceRGB(rgb...), cnv)
     hide(grayW)  
 end
 
 function call_negative(w)
-    rgb = ManagePic.generateMatricesRGB(current_image)
-    rgb = colorFunctions.negative(rgb)
-    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    rgb = generateMatricesRGB(current_image)
+    rgb = negative(rgb)
+    new_current_image(matriceRGB(rgb...), cnv)
 end
 
 function call_blur(w)
-    rgb = ManagePic.generateMatricesRGB(current_image)
+    rgb = generateMatricesRGB(current_image)
     blur_radius = get_gtk_property(a_blur_radius_s, :value, Int)
     blur_intens = get_gtk_property(a_blur_intens_s, :value, Int)
     if blur_radius % 2 == 0
         blur_radius += 1
     end
     if blur_choice == blur_mask_aver
-        rgb = blurrFunctions.converting(rgb, blurrFunctions.average(blur_radius))
+        rgb = converting(rgb, average(blur_radius))
     elseif blur_choice == blur_mask_circ
-        rgb = blurrFunctions.converting(rgb, blurrFunctions.circle(blur_radius))
+        rgb = converting(rgb, circle(blur_radius))
     elseif blur_choice == blur_mask_lp3
-        rgb = blurrFunctions.converting(rgb, blurrFunctions.LP3(blur_radius, blur_intens))
+        rgb = converting(rgb, LP3(blur_radius, blur_intens))
     end
-    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    new_current_image(matriceRGB(rgb...), cnv)
     hide(blurW)
 end
 
 function call_sharp(w)
-    rgb = ManagePic.generateMatricesRGB(current_image)
+    rgb = generateMatricesRGB(current_image)
     sharp_radius = get_gtk_property(a_sharp_radius_s, :value, Int)
     sharp_intens = get_gtk_property(a_sharp_intens_s, :value, Int)
     if sharp_radius % 2 == 0
         sharp_radius += 1
     end
-    rgb = blurrFunctions.converting(rgb, blurrFunctions.meanRemoval(sharp_radius, sharp_intens))
+    rgb = converting(rgb, meanRemoval(sharp_radius, sharp_intens))
 
-    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    new_current_image(matriceRGB(rgb...), cnv)
     hide(sharpW)
 end
 
 function call_affin(w)
     
-    rgb = ManagePic.generateMatricesRGB(current_image)
+    rgb = generateMatricesRGB(current_image)
     if length(transit_given_reg) > 0
         origin = (0, 0)
         s_r_list = []
-        df_origin = transformationFunctions.defaultOrigin(selection_ld, selection_ru)
+        df_origin = defaultOrigin(selection_ld, selection_ru)
         if orig_choice == orig_c
             origin = df_origin
         elseif orig_choice == orig_l
@@ -634,8 +635,8 @@ function call_affin(w)
             end
         end
         transl_vect = (transl_y, transl_x)
-        rgb = transformationFunctions.selectionTransform(rgb, selection_ld, selection_ru, [(origin, s_r_list, transl_vect)])
-        new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+        rgb = selectionTransform(rgb, selection_ld, selection_ru, [(origin, s_r_list, transl_vect)])
+        new_current_image(matriceRGB(rgb...), cnv)
     else
         new_current_image(current_image, cnv)
     end
@@ -644,15 +645,15 @@ function call_affin(w)
 end
 
 function call_xmirr(w)
-    rgb = ManagePic.generateMatricesRGB(current_image)
-    rgb = transformationFunctions.mirror(rgb, :x)
-    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    rgb = generateMatricesRGB(current_image)
+    rgb = mirror(rgb, :x)
+    new_current_image(matriceRGB(rgb...), cnv)
 end
 
 function call_ymirr(w)
-    rgb = ManagePic.generateMatricesRGB(current_image)
-    rgb = transformationFunctions.mirror(rgb, :y)
-    new_current_image(ManagePic.matriceRGB(rgb...), cnv)
+    rgb = generateMatricesRGB(current_image)
+    rgb = mirror(rgb, :y)
+    new_current_image(matriceRGB(rgb...), cnv)
 end
     
     
