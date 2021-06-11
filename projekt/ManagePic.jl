@@ -1,6 +1,5 @@
 # ManagePic.jl
 
-println("ASDAD")
 using FileIO, Images, ImageShow
 
 
