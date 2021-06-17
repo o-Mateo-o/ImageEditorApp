@@ -37,7 +37,7 @@
 
 2. Type in Julia terminal: 
    
-  * `cd("path/repo")` -*path/repo* is path to repository on your computer 
+  * `cd("path/repo")` -*path/repo* is path to the repository on your computer 
 
    * `using Pkg; Pkg.add(["Gtk", "Images", "ImageView", "FileIO", "ImageShow"])`
 
