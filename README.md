@@ -23,10 +23,10 @@ Faculty of Pure and Applied Mathematics at Wroclaw Univeristy of Science and Tec
   * mirror reflection.
 ***
 ### <span style="color:	#ffb6c1"> **Contributors' course nicknames:**</span>
-1. Oriolus,
-2. Jelonek,
-3. Wariacino,
-4. Sheldon Cooper.
+1. Oriolus (https://github.com/Blueberrybug),
+2. Jelonek (https://github.com/jesionka),
+3. Wariacino (https://github.com/o-Mateo-o),
+4. Sheldon Cooper (https://github.com/neras).
 ***
 ## <span style="color:	#ffb6c1">**Technologies:**</span>
 * [Julia](https://docs.julialang.org/en/v1/) - programming language,
