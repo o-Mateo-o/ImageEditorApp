@@ -1,3 +1,7 @@
+#############################################################
+## NOTE: This file is written in the standard GTK convention;
+## documentation is not necessary in this particular case.
+#############################################################
 
 include("blurrFunctions.jl")
 include("colorFunctions.jl")
@@ -25,11 +29,9 @@ function new_current_image(new_image, canvas)
     global current_image_u = current_image
     global current_image = new_image
     global undo_counter += 1
-
     imshow(canvas, new_image)
-
-
 end
+
 function undo_image(canvas)
     if undo_counter > 0
         global current_image = current_image_u
@@ -478,7 +480,6 @@ end
 transit_limit_dialog_close(w) = hide(transitLimitW)
 
 
-
 # BACKEND FUNCTIONS CALL
 function call_brctr(w)
     rgb = generateMatricesRGB(current_image)
@@ -595,8 +596,7 @@ function call_sharp(w)
     hide(sharpW)
 end
 
-function call_affin(w)
-    
+function call_affin(w) 
     rgb = generateMatricesRGB(current_image)
     if length(transit_given_reg) > 0
         origin = (0, 0)
@@ -654,7 +654,6 @@ function call_ymirr(w)
     rgb = mirror(rgb, :y)
     new_current_image(matriceRGB(rgb...), cnv)
 end
-    
     
 
 # SIGNAL CONNECTING
