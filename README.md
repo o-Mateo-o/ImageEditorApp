@@ -1,8 +1,8 @@
 # <span style="color:#e9967a"><p align = "center">**Transformations of colors matrices - algorithms of graphics editing implementations in Julia** </p></span>
 
-Faculty of Pure and Applied Mathematics at Wroclaw Univeristy of Science and Technology
-
 ## <span style="color:	#ffb6c1">**This application was made as a course assignment.**</span>
+ 
+Faculty of Pure and Applied Mathematics at Wroclaw Univeristy of Science and Technology.
  
 ### <span style="color:	#ffb6c1"> **Contributors' course nicknames:**</span>
 1. Oriolus,
