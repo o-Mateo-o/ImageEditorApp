@@ -1,6 +1,9 @@
 # <span style="color:#e9967a"><p align = "center">**Transformations of colors matrices - algorithms of graphics editing implementations in Julia** </p></span>
 
-## <span style="color:	#ffb6c1">**The panel of software guys from Faculty of Pure and Applied Mathematics at Wroclaw Univeristy of Science and Technology :**</span>
+## <span style="color:	#ffb6c1">**This application was made as a course assignment.
+ Faculty of Pure and Applied Mathematics at Wroclaw Univeristy of Science and Technology**</span>
+ 
+### <span style="color:	#ffb6c1"> **Contributors' course nicknames:**</span>
 1. Oriolus,
 2. Jelonek,
 3. Wariacino,
@@ -14,7 +17,6 @@
 ***
 ## <span style="color:  #ffb6c1">**Short program description**</span>
 <div style="text-align: justify">This program is used to graphics editing and and accepts jpg files formats. It offers wide variety of transitions, which are available through a user-friendly Graphical User Interface.</div>
-<br/><br/>
 
 ### <span style="color:	#ffb6c1"> **Available functionality:**</span>
 * color transformations:
