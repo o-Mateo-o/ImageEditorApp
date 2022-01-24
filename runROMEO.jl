@@ -1,2 +1,2 @@
 using Gtk, Images, ImageView, ImageMagick
-include("projekt/appGUI.jl")
+include("code/appGUI.jl")
