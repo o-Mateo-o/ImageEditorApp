@@ -6,7 +6,6 @@
 include("blurrFunctions.jl")
 include("colorFunctions.jl")
 include("transformationFunctions.jl")
-#include("ManagePic.jl")
 
 using Gtk, Images, ImageView, FileIO
 
